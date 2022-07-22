@@ -3,13 +3,14 @@ const TodoItem = () => {
 	let title = null;
 	let description = null;
 	let dueDate = null;
+	let creationDate = null;
 	let priority = null;
 	let category = null;
 	let note = null;
 	let status = true;
 
 	const getStatus = () => {
-		return title;
+		return status;
 	};
 	const toggleStatus = () => {
 		title = status === true ? false : true;
@@ -33,7 +34,7 @@ const TodoItem = () => {
 		dueDate = newDueDate;
 	};
 	const getCreationDate = () => {
-		return dueDate;
+		return creationDate;
 	};
 	const setCreationDate = (newCreationDate) => {
 		creationDate = newCreationDate;
@@ -66,14 +67,14 @@ const TodoItem = () => {
 	// Create a list for checklist option inside each todo-item
 	let checkLists = [];
 	const addCheckList = (input) => {
-		const checkList = {};
+		let checkList = {};
 		checkList.description = input;
 		checkList.status = true;
 		checkLists.push(checkList);
 	};
-	const deleteCheckList = (checkList) => {
+	const deleteCheckList = (checkListIndex) => {
 		for (let i = checkLists.length - 1; i >= 0; i--) {
-			if (i === checkList) {
+			if (i === checkListIndex) {
 				checkLists.splice(i, 1);
 			}
 		}
@@ -109,12 +110,12 @@ export default function todo() {
 	const getTodoItemList = () => {
 		return todoItemList;
 	};
-	const setTodoItemList = (newList) => {
-		todoItemList = newList;
+	const setTodoItemList = (newListArray) => {
+		todoItemList = newListArray;
 	};
 
 	// Create todo-items and push to todo-list
-	const createTodoItem = (itemData) => {
+	const createTodoItem = (itemData = {}) => {
 		const newTodoItem = TodoItem();
 
 		newTodoItem.setTitle(itemData.title);
@@ -129,10 +130,10 @@ export default function todo() {
 		todoItemList.push(newTodoItem);
 	};
 
-	const deleteTodoItem = (item) => {
+	const deleteTodoItem = (todoItemIndex) => {
 		// Iterate todo-list backward and delete the todo item
 		for (let i = todoItemList.length - 1; i >= 0; i--) {
-			if (i === item) {
+			if (i === todoItemIndex) {
 				todoItemList.splice(i, 1);
 			}
 		}

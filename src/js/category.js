@@ -41,7 +41,6 @@ const updateCategory = (oldCat, newCat) => {
 	Todo().setTodoItemList(arr);
 };
 
-
 let categories = [];
 export default function category() {
 	const getCategories = () => {
@@ -60,8 +59,8 @@ export default function category() {
 	const deleteCategory = (categoryIndex, deleteEverything = false) => {
 		let name = categories[categoryIndex].category;
 
-
-		if (deleteEverything) { // delete both the list and all items in the category
+		if (deleteEverything) {
+			// delete both the list and all items in the category
 			// delete category from categories list
 			for (let i = categories.length - 1; i >= 0; i--) {
 				if (i === categoryIndex) {
@@ -76,12 +75,13 @@ export default function category() {
 				// push the updated array to the default array
 				Todo().setTodoItemCategory(arr);
 			}
-		} else { // delete the list and change items to the default category
+		} else {
+			// delete the list and change items to the default category
 			for (let i = categories.length - 1; i >= 0; i--) {
 				if (i === categoryIndex) {
 					categories.splice(i, 1);
 				}
-				updateCategory(name, "Inbox");
+				updateCategory(name, null);
 			}
 		}
 	};

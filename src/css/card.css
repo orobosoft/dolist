@@ -1,0 +1,120 @@
+/* CARD COMPONENT */
+/* Active */
+.card {
+	width: 100%;
+	font-size: 1.5rem;
+	gap: 10px;
+	background-color: #fff;
+	padding: 1.5rem 2rem;
+	box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+	border-radius: 1rem;
+	-webkit-border-radius: 1rem;
+	-moz-border-radius: 1rem;
+	-ms-border-radius: 1rem;
+	-o-border-radius: 1rem;
+}
+.completed.card {
+	background-color: var(--color-1);
+}
+.card-aside {
+	padding-top: 1px;
+}
+.card-main {
+	width: 100%;
+}
+.card__title {
+	font-size: 1.6rem;
+}
+.card__extras {
+	font-size: 1.4rem;
+	align-items: center;
+	width: 100%;
+	gap: 10px;
+}
+
+.card__tags,
+.card__flag-container {
+	align-items: center;
+	justify-items: flex-start;
+	gap: 1px;
+}
+.card__tag,
+.card__flag {
+	font-size: 1.3rem;
+
+	padding: 1.5px 3px;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-ms-border-radius: 5px;
+	-o-border-radius: 5px;
+}
+.card__tags .span-icon,
+.card__flag-container .span-icon {
+	height: 15px;
+	width: 15px;
+}
+.card__tag {
+	background-color: rgba(0, 0, 0, 0.06);
+}
+.card__flag {
+	font-weight: bold;
+}
+.low-priority {
+	color: #0fcef0;
+}
+.medium-priority {
+	color: #ffb004;
+}
+.high-priority {
+	color: #f04c0f;
+}
+.card__project {
+	margin-left: auto;
+}
+.card__project-color {
+	margin-left: 4px;
+	height: 10px;
+	width: 10px;
+	background-color: var(--color-7);
+	border-radius: 40%;
+	-webkit-border-radius: 40%;
+	-moz-border-radius: 40%;
+	-ms-border-radius: 40%;
+	-o-border-radius: 40%;
+}
+
+/* CheckBox Button */
+.outer-check,
+.inner-check {
+	border-radius: 40%;
+	-webkit-border-radius: 40%;
+	-moz-border-radius: 40%;
+	-ms-border-radius: 40%;
+	-o-border-radius: 40%;
+}
+.outer-check {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 18px;
+	width: 18px;
+	border: 2px solid var(--color-3);
+}
+.inner-check {
+	position: relative;
+	height: 18px;
+	width: 18px;
+}
+.inner-check .span-icon {
+	height: 16px;
+	width: 16px;
+	position: absolute;
+	color: #fff;
+	stroke-width: 3px;
+	top: 2px;
+	left: 0;
+}
+.completed .inner-check {
+	background-color: var(--color-3);
+}

@@ -12,7 +12,8 @@
 	border-radius: 100px;
 }
 .card-container::-webkit-scrollbar-track,
-.e-card-bg::-webkit-scrollbar-track {
+.e-card-bg::-webkit-scrollbar-track,
+textarea::-webkit-scrollbar-track {
 	margin-top: 10px;
 	margin-bottom: 10px;
 }

@@ -170,19 +170,11 @@ function renderMain() {
 app.append(renderAside(), renderMain());
 
 // Task Card
-function createTaskCard(
-	status = true,
-	title,
-	description,
-	tags = [],
-	flag = "none",
-	project,
-	projectColorCode
-) {
+export function createTaskCard(obj) {
 	const card = document.createElement("div");
 	card.classList = "card flex";
 
-	if (status === false) {
+	if (obj.status === false) {
 		card.classList.add("completed");
 	} else card.classList.remove("completed");
 
@@ -200,12 +192,12 @@ function createTaskCard(
 	outerCheck.appendChild(innerCheck);
 	cardAside.append(outerCheck);
 
-	const cardTitle = document.createElement("h4");
+	const cardTitle = document.createElement("h3");
 	cardTitle.classList = "card__title";
-	cardTitle.textContent = title;
+	cardTitle.textContent = obj.title;
 	const cardDescription = document.createElement("p");
 	cardDescription.classList = "card__description";
-	cardDescription.textContent = description;
+	cardDescription.textContent = obj.description;
 	const cardExtras = document.createElement("div");
 	cardExtras.classList = "card__extras flex";
 
@@ -214,8 +206,8 @@ function createTaskCard(
 	createSvgIcon(cardExtrasTags, tagIcon);
 
 	// loop tags to render all tags
-	for (let i = 0; i < tags.length; i++) {
-		const element = tags[i];
+	for (let i = 0; i < obj.tags.length; i++) {
+		const element = obj.tags[i];
 
 		const tag = document.createElement("span");
 		tag.classList = "card__tag";
@@ -229,7 +221,8 @@ function createTaskCard(
 	cardExtrasFlagContainer.classList = "card__flag-container flex";
 	createSvgIcon(cardExtrasFlagContainer, flagIcon);
 	const cardExtrasFlag = document.createElement("span");
-	cardExtrasFlag.textContent = flag;
+	cardExtrasFlag.textContent = obj.priority;
+	let flag = obj.priority;
 	let flagColor;
 	switch (flag) {
 		case "high":
@@ -251,11 +244,11 @@ function createTaskCard(
 
 	const cardExtrasProject = document.createElement("span");
 	cardExtrasProject.classList = "card__project";
-	cardExtrasProject.textContent = project;
+	cardExtrasProject.textContent = obj.category;
 	const projectColor = document.createElement("div");
 	projectColor.classList = "card__project-color";
-	projectColor.style.backgroundColor = projectColorCode;
-
+	projectColor.style.backgroundColor = obj.categoryColor;
+	console.log(obj.category);
 	cardExtras.append(
 		cardExtrasTags,
 		cardExtrasFlagContainer,
@@ -302,7 +295,7 @@ function createTasksListContainer() {
 	return listCardContainer;
 }
 
-function expandCard(checkList = ["", "", "", ""]) {
+function expandCard(expandCardObj = { checkLists: [] }) {
 	const blur = document.createElement("div");
 	blur.classList = "e-card-blur";
 
@@ -312,7 +305,7 @@ function expandCard(checkList = ["", "", "", ""]) {
 	blur.appendChild(background);
 
 	const eCardTop = document.createElement("p");
-	eCardTop.textContent = "Heading";
+	eCardTop.textContent = expandCardObj.category || "Category";
 	eCardTop.classList = "e-card__top";
 
 	const eCardClose = document.createElement("div");
@@ -322,9 +315,10 @@ function expandCard(checkList = ["", "", "", ""]) {
 
 	const eCardHead = document.createElement("div");
 	eCardHead.classList = "e-card__header flex";
-	const eCardTitle = document.createElement("h1");
-	eCardTitle.textContent =
-		"Doing something new can be. I dont know how to say it tho";
+	const eCardTitle = document.createElement("textarea");
+	eCardTitle.setAttribute("maxlength", "60");
+
+	eCardTitle.value = expandCardObj.title || "Title";
 	eCardTitle.classList = "e-card__title";
 	const eCardEdit = document.createElement("div");
 
@@ -341,8 +335,27 @@ function expandCard(checkList = ["", "", "", ""]) {
 	const eCardStatusName = document.createElement("p");
 	eCardStatusName.textContent = "Status";
 	eCardStatusName.classList = "e-card__status-name";
-	const eCardStatusValue = document.createElement("p");
-	eCardStatusValue.textContent = "Pending";
+	const eCardStatusValue = document.createElement("select");
+	const statusOpt0 = document.createElement("option");
+	statusOpt0.textContent = "Pending";
+	statusOpt0.setAttribute("value", "true");
+	statusOpt0.setAttribute("name", "pending");
+	const statusOpt1 = document.createElement("option");
+	statusOpt1.textContent = "Completed";
+	statusOpt1.setAttribute("value", "false");
+	statusOpt1.setAttribute("name", "completed");
+
+	if (expandCardObj.status === true) {
+		statusOpt0.setAttribute("selected", "");
+	}
+	if (expandCardObj.status === false) {
+		statusOpt1.setAttribute("selected", "");
+	}
+
+	console.log(eCardStatusValue.value);
+
+	eCardStatusValue.append(statusOpt0, statusOpt1);
+
 	eCardStatusValue.className = "e-card__status-value";
 	eCardStatus.append(eCardStatusName, eCardStatusValue);
 
@@ -351,8 +364,9 @@ function expandCard(checkList = ["", "", "", ""]) {
 	const eCardDateName = document.createElement("p");
 	eCardDateName.textContent = "Date";
 	eCardDateName.classList = "e-card__date-name";
-	const eCardDateValue = document.createElement("p");
-	eCardDateValue.textContent = "12 Sep 2022";
+	const eCardDateValue = document.createElement("input");
+	eCardDateValue.setAttribute("type", "date");
+
 	eCardDateValue.classList = "e-card__date-value";
 	eCardDate.append(eCardDateName, eCardDateValue);
 
@@ -370,8 +384,37 @@ function expandCard(checkList = ["", "", "", ""]) {
 	const eCardPriorityName = document.createElement("p");
 	eCardPriorityName.textContent = "Priority";
 	eCardPriorityName.classList = "e-card__priority-name";
-	const eCardPriorityValue = document.createElement("p");
-	eCardPriorityValue.textContent = "Medium";
+	const eCardPriorityValue = document.createElement("select");
+
+	const priOpt0 = document.createElement("option");
+	priOpt0.textContent = "None";
+	priOpt0.setAttribute("value", "none");
+	priOpt0.setAttribute("name", "none");
+	const priOpt1 = document.createElement("option");
+	priOpt1.textContent = "Low";
+	priOpt1.setAttribute("value", "low");
+	priOpt1.setAttribute("name", "low");
+	const priOpt2 = document.createElement("option");
+	priOpt2.textContent = "Medium";
+	priOpt2.setAttribute("value", "medium");
+	priOpt2.setAttribute("name", "medium");
+	const priOpt3 = document.createElement("option");
+	priOpt3.textContent = "High";
+	priOpt3.setAttribute("value", "high");
+	priOpt3.setAttribute("name", "high");
+
+	if (expandCardObj.priority === "none") {
+		priOpt0.setAttribute("selected", "");
+	} else if (expandCardObj.priority === "low") {
+		priOpt1.setAttribute("selected", "");
+	} else if (expandCardObj.priority === "medium") {
+		priOpt2.setAttribute("selected", "");
+	} else if (expandCardObj.priority === "hard") {
+		priOpt3.setAttribute("selected", "");
+	}
+
+	eCardPriorityValue.append(priOpt0, priOpt1, priOpt2, priOpt3);
+
 	eCardPriorityValue.classList = "e-card__priority-value";
 	eCardPriority.append(eCardPriorityName, eCardPriorityValue);
 
@@ -381,6 +424,7 @@ function expandCard(checkList = ["", "", "", ""]) {
 	const eCardDescriptionArea = document.createElement("div");
 	eCardDescriptionArea.classList = "e-card__description-area";
 	const eCardDescriptionText = document.createElement("textarea");
+	eCardDescriptionText.value = expandCardObj.description;
 	eCardDescriptionArea.appendChild(eCardDescriptionText);
 
 	// Expanded Card Checklist
@@ -396,11 +440,11 @@ function expandCard(checkList = ["", "", "", ""]) {
 	eCardTodoList.classList = "e-card__todo-list";
 
 	// Expanded Card Checklist Item
-	function expandedCardCheckListItem(status = true, description) {
+	function expandedCardCheckListItem(obj) {
 		const eCardTodoItem = document.createElement("div");
 		eCardTodoItem.classList = "e-card__todo-item flex";
 
-		if (status === false) {
+		if (obj.status === false) {
 			eCardTodoItem.classList.add("completed");
 		} else eCardTodoItem.classList.remove("completed");
 
@@ -419,8 +463,9 @@ function expandCard(checkList = ["", "", "", ""]) {
 		eCardTodoItemCheck.appendChild(eCardTodoItemCheckOuter);
 
 		// Check list text
-		const eCardTodoItemText = document.createElement("div");
-		eCardTodoItemText.textContent = description;
+		const eCardTodoItemText = document.createElement("input");
+		eCardTodoItemText.setAttribute("maxlength", "40");
+		eCardTodoItemText.value = obj.description || "";
 		eCardTodoItemText.classList = "e-card__todo-text";
 		const eCardTodoItemDelete = document.createElement("div");
 		// Check list delete icon
@@ -435,14 +480,15 @@ function expandCard(checkList = ["", "", "", ""]) {
 		return eCardTodoItem;
 	}
 
+	// let objCheckList = expandCardObj.checkLists;
 	// Call check list items
-	for (let i = 0; i < checkList.length; i++) {
-		const element = checkList[i];
+	renderCheckList(expandCardObj.checkLists);
+	function renderCheckList(obj) {
+		for (let i = 0; i < obj.length; i++) {
+			const element = obj[i];
 
-		const status = element.status;
-		const text = element.description;
-
-		eCardTodoList.appendChild(expandedCardCheckListItem(status, text));
+			eCardTodoList.appendChild(expandedCardCheckListItem(element));
+		}
 	}
 
 	const eCardFooter = document.createElement("div");
@@ -478,117 +524,7 @@ function expandCard(checkList = ["", "", "", ""]) {
 }
 
 const unCompletedList = document.querySelector(".uncompleted-tasks");
-unCompletedList.append(
-	createTaskCard(
-		true,
-		"This is a demo",
-		"This will be the first demo description",
-		["Dev", "Web", "Book", "Success"],
-		"none",
-		"Inbox",
-		"rgb(32, 123, 98)"
-	)
-);
-unCompletedList.append(
-	createTaskCard(
-		true,
-		"This is a demo",
-		"This will be the first demo description",
-		["Dev", "Web", "Book", "Success"],
-		"high",
-		"Inbox",
-		"rgb(32, 123, 98)"
-	)
-);
-unCompletedList.append(
-	createTaskCard(
-		true,
-		"This is a demo",
-		"This will be the first demo description",
-		["Dev", "Web", "Book", "Success"],
-		"low",
-		"Inbox",
-		"rgb(132, 123, 229)"
-	)
-);
-unCompletedList.append(
-	createTaskCard(
-		true,
-		"This is a demo",
-		"This will be the first demo description",
-		["Dev", "Web", "Success"],
-		"high",
-		"Inbox",
-		"rgb(32, 13, 98)"
-	)
-);
-unCompletedList.append(
-	createTaskCard(
-		true,
-		"This is a demo",
-		"This will be the first demo description",
-		["Dev", "Web", "Book", "Success"],
-		"medium",
-		"Inbox",
-		"rgb(32, 123, 98)"
-	)
-);
-unCompletedList.append(
-	createTaskCard(
-		true,
-		"This is a demo",
-		"This will be the first demo description",
-		["Dev", "Web", "Book", "Success"],
-		"high",
-		"Inbox",
-		"rgb(32, 123, 98)"
-	)
-);
 
 const completedList = document.querySelector(".completed-tasks");
-completedList.append(
-	createTaskCard(
-		false,
-		"This is a demo",
-		"This will be the first demo description",
-		["Dev", "Web", "Book", "Success"],
-		"high",
-		"Inbox",
-		"rgb(32, 123, 98)"
-	)
-);
-completedList.append(
-	createTaskCard(
-		false,
-		"This is a demo",
-		"This will be the first demo description",
-		["Dev", "Web", "Book", "Success"],
-		"medium",
-		"Inbox",
-		"rgb(32, 13, 98)"
-	)
-);
-completedList.append(
-	createTaskCard(
-		false,
-		"This is a demo",
-		"This will be the first demo description",
-		["Dev", "Web", "Book", "Success"],
-		"medium",
-		"Inbox",
-		"rgb(32, 13, 98)"
-	)
-);
-completedList.append(
-	createTaskCard(
-		false,
-		"This is a demo",
-		"This will be the first demo description",
-		["Dev", "Web", "Book", "Success"],
-		"medium",
-		"Inbox",
-		"rgb(32, 13, 98)"
-	)
-);
 
-// app.append(expandCard());
+export { expandCard };

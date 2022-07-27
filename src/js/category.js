@@ -4,8 +4,17 @@ import Todo from "./todo-items.js";
 const arr = Todo().getTodoItemList();
 
 // Category list factory
-const CategoryItem = (name) => {
-	const categoryName = name;
+const CategoryItem = (name, color) => {
+	let categoryName = name;
+	let categoryColor = color || getRandomColor();
+	function getRandomColor() {
+		var letters = "0123456789ABCDEF".split("");
+		var color = "#";
+		for (var i = 0; i < 6; i++) {
+			color += letters[Math.round(Math.random() * 15)];
+		}
+		return color;
+	}
 
 	const getCategoryName = () => {
 		return categoryName;
@@ -13,6 +22,12 @@ const CategoryItem = (name) => {
 	const changeCategoryName = (newName) => {
 		updateCategory(categoryName, newName);
 		categoryName = newName;
+	};
+	const getCategoryColor = () => {
+		return categoryColor;
+	};
+	const setCategoryColor = (newCategoryColor) => {
+		categoryColor = newCategoryColor;
 	};
 
 	const categoryTodo = (categoryName) => {
@@ -25,6 +40,8 @@ const CategoryItem = (name) => {
 	return {
 		getCategoryName,
 		changeCategoryName,
+		getCategoryColor,
+		setCategoryColor,
 		categoryTodo,
 		createTodoItemInList,
 	};
@@ -41,7 +58,7 @@ const updateCategory = (oldCat, newCat) => {
 	Todo().setTodoItemList(arr);
 };
 
-let categories = [];
+let categories = {};
 export default function category() {
 	const getCategories = () => {
 		return categories;
@@ -50,39 +67,29 @@ export default function category() {
 		categories = newCategoriesArray;
 	};
 
-	const createCategory = (name) => {
-		const newCategory = CategoryItem(name);
+	const createCategory = (name, color) => {
+		const newCategory = CategoryItem(name, color);
 
-		categories.push(newCategory);
+		categories.name = name;
 	};
 
-	const deleteCategory = (categoryIndex, deleteEverything = false) => {
-		let name = categories[categoryIndex].category;
-
+	const deleteCategory = (categoryName, deleteEverything = false) => {
 		if (deleteEverything) {
 			// delete both the list and all items in the category
 			// delete category from categories list
-			for (let i = categories.length - 1; i >= 0; i--) {
-				if (i === categoryIndex) {
-					categories.splice(i, 1);
-				}
-			}
+			delete categories[categoryName];
 			// delete todo-items in the category
 			for (let i = arr.length - 1; i >= 0; i--) {
-				if (arr[i].category === name) {
+				if (arr[i].category === categoryName) {
 					arr.splice(i, 1);
 				}
 				// push the updated array to the default array
-				Todo().setTodoItemCategory(arr);
+				Todo().setTodoItemList(arr);
 			}
 		} else {
 			// delete the list and change items to the default category
-			for (let i = categories.length - 1; i >= 0; i--) {
-				if (i === categoryIndex) {
-					categories.splice(i, 1);
-				}
-				updateCategory(name, null);
-			}
+			delete categories[categoryName];
+			updateCategory(categoryName, 'Inbox');
 		}
 	};
 

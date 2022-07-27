@@ -5,7 +5,7 @@ const TodoItem = () => {
 	let dueDate = null;
 	let creationDate = null;
 	let priority = null;
-	let category = null;
+	let category = 'Inbox';
 	let note = null;
 	let status = true;
 
@@ -45,6 +45,28 @@ const TodoItem = () => {
 	const setPriority = (newPriority) => {
 		priority = newPriority;
 	};
+
+	// Tags
+	const getTags = () => {
+		return tags;
+	};
+	const setTags = (newTags) => {
+		tags = newTags;
+	};
+
+	let tags = []
+	const addTag = (input) => {
+		tags.push(input);
+	};
+	const deleteTag = (tagIndex) => {
+		for (let i = tags.length - 1; i >= 0; i--) {
+			if (i === tagIndex) {
+				tags.splice(i, 1);
+			}
+		}
+	};
+
+	// Category
 	const getCategory = () => {
 		return category;
 	};
@@ -93,6 +115,10 @@ const TodoItem = () => {
 		setCreationDate,
 		getPriority,
 		setPriority,
+		getTags,
+		setTags,
+		addTag,
+		deleteTag,
 		getCategory,
 		setCategory,
 		getNote,

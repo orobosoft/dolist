@@ -30,11 +30,12 @@ const CategoryItem = (name, color) => {
 		categoryColor = newCategoryColor;
 	};
 
-	const categoryTodo = (categoryName) => {
-		return arr.filter((v) => v.category === categoryName);
-	};
+	// const categoryTodo = (categoryName) => {
+	// 	return arr.filter((v) => v.getCategory() === categoryName);
+	// };
 	const createTodoItemInList = () => {
 		Todo().createTodoItem({ category: categoryName });
+
 	};
 
 	return {
@@ -42,7 +43,7 @@ const CategoryItem = (name, color) => {
 		changeCategoryName,
 		getCategoryColor,
 		setCategoryColor,
-		categoryTodo,
+		// categoryTodo,
 		createTodoItemInList,
 	};
 };
@@ -58,7 +59,7 @@ const updateCategory = (oldCat, newCat) => {
 	Todo().setTodoItemList(arr);
 };
 
-let categories = {};
+export let categories = [];
 export default function category() {
 	const getCategories = () => {
 		return categories;
@@ -69,15 +70,19 @@ export default function category() {
 
 	const createCategory = (name, color) => {
 		const newCategory = CategoryItem(name, color);
-
-		categories.name = name;
+		categories.push(newCategory);
+		return newCategory;
 	};
 
 	const deleteCategory = (categoryName, deleteEverything = false) => {
 		if (deleteEverything) {
 			// delete both the list and all items in the category
 			// delete category from categories list
-			delete categories[categoryName];
+			for (let i = categories.length - 1; i >= 0; i--) {
+				if (categories[i].categoryName === categoryName) {
+					categories.splice(i, 1);
+				}
+			}
 			// delete todo-items in the category
 			for (let i = arr.length - 1; i >= 0; i--) {
 				if (arr[i].category === categoryName) {
@@ -88,7 +93,11 @@ export default function category() {
 			}
 		} else {
 			// delete the list and change items to the default category
-			delete categories[categoryName];
+			for (let i = categories.length - 1; i >= 0; i--) {
+				if (categories[i].categoryName === categoryName) {
+					categories.splice(i, 1);
+				}
+			}
 			updateCategory(categoryName, 'Inbox');
 		}
 	};

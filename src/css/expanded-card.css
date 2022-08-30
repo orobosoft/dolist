@@ -4,9 +4,10 @@
 	justify-content: center;
 	align-items: center;
 	position: absolute;
-	background: #000;
 	top: 0;
 	bottom: 0;
+	left: 0;
+	right: 0;
 	width: 100%;
 	padding: 1rem 0;
 	background: rgba(0, 0, 0, 0.4);
@@ -16,7 +17,7 @@
 .e-card-bg {
 	position: relative;
 	font-size: 1.6rem;
-	background-color: #fff;
+	background-color: var(--bg-color);
 	margin: 0 auto;
 	width: 50rem;
 	height: 60rem;
@@ -30,10 +31,6 @@
 	scroll-behavior: smooth;
 }
 
-.e-card__top {
-	font-size: 1.4rem;
-	/* margin-bottom: 1rem; */
-}
 .e-card__close {
 	position: absolute;
 	top: 15px;
@@ -73,11 +70,8 @@
 	overflow: hidden;
 	height: 60px;
 	width: 100%;
-
-
-
 }
-.e-card__edit{
+.e-card__edit {
 	margin-left: auto;
 }
 .e-card__edit,
@@ -120,9 +114,47 @@
 .e-card__status-value:active,
 .e-card__status-value:focus,
 .e-card__priority-value:active,
-.e-card__priority-value:focus{
+.e-card__priority-value:focus {
 	border: none;
 	outline: none;
+}
+
+.e-card__tag-value {
+	gap: 2px;
+}
+.e-card__tag-item {
+	/* padding: 0 10px; */
+	background-color: rgba(var(--bg-color-t), 0.07);
+	padding: 1.5px 3px;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-ms-border-radius: 5px;
+	-o-border-radius: 5px;
+}
+.tag-list-btn {
+	position: relative;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
+	width: 30px;
+}
+.tag-list-btn:hover {
+	color: var(--color-6);
+}
+
+.e-card__category-container {
+	gap: 10px;
+	min-width: 7rem;
+	left: 0;
+}
+.e-card__tag-container {
+	right: -50%;
+}
+
+.e-card__tag-item:hover {
+	background-color: rgba(var(--bg-color-t), 0.1);
+	color: var(--color-6);
 }
 .e-card__description-title {
 	color: var(--color-6);
@@ -141,7 +173,7 @@
 	color: var(--color-4);
 	padding: 10px;
 	resize: none;
-	background-color: rgba(224, 232, 231, 0.5);
+	background-color: rgba(var(--color-4-t), 0.1);
 	border-radius: 1rem;
 	-webkit-border-radius: 1rem;
 	-moz-border-radius: 1rem;
@@ -158,7 +190,7 @@
 }
 .e-card__todo-add {
 	width: 100%;
-	text-shadow: #fff 1px 1px 2px;
+	text-shadow: var(--bg-color) 1px 1px 2px;
 	font-size: 1.6rem;
 	font-weight: bold;
 	border: none;
@@ -206,7 +238,8 @@
 	height: 16px;
 	width: 16px;
 	border: 1px solid var(--color-3);
-	color: #fff;
+	color: var(--bg-color);
+	pointer-events: none;
 }
 
 .e-card__todo-check-inner {
@@ -226,11 +259,10 @@
 	color: var(--color-3);
 }
 
-.e-card__todo-text{
+.e-card__todo-text {
 	width: 100%;
 	font-size: 1.6rem;
 	border: none;
-
 }
 
 .e-card__todo-delete {
@@ -269,11 +301,12 @@
 .e-card__cancel {
 	margin-left: auto;
 	color: var(--color-4);
+	background-color: var(--bg-color);
 }
 .e-card__save {
 	background-color: var(--color-3);
-	color: #fff;
+	color: var(--bg-color);
 }
 .e-card__save:hover {
-	background-color: var(--color-5);
+	/* background-color: var(--color-5); */
 }

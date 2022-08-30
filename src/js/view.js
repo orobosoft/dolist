@@ -15,15 +15,20 @@ import {
 	flagIcon,
 	deleteIcon,
 	tickIcon,
+	addIcon,
+	plusIcon,
+	plusCircleIcon,
+	dotsHorizontal,
 } from "./icons";
 const body = document.querySelector("body");
+body.classList.add('light')
 const app = document.createElement("div");
 app.className = "app";
 app.id = "app";
 body.appendChild(app);
 
 // Aside Section
-function renderAside() {
+export function renderAside() {
 	const aside = document.createElement("aside");
 	aside.classList = "aside";
 
@@ -42,7 +47,10 @@ function renderAside() {
 
 	function createList(name, iconPath) {
 		const i = document.createElement("li");
+		i.classList = name.toLowerCase();
+		i.id = name.toLowerCase();
 		const iIcon = createSvgIcon(i, iconPath);
+		iIcon.setAttribute("for", i.id);
 		const iText = document.createElement("p");
 		iText.textContent = name;
 		i.append(iIcon, iText);
@@ -53,9 +61,82 @@ function renderAside() {
 	const today = createList("Today", todayIcon);
 	const inbox = createList("Inbox", inboxIcon);
 	const project = createList("Projects", projectIcon);
-	const tags = createList("Tags", tagIcon);
 
-	menu.append(overview, today, inbox, project, tags);
+	const projectUlContainer = document.createElement("li");
+	projectUlContainer.classList = "project-ul-container";
+	projectUlContainer.style.display = "none";
+	const projectUl = document.createElement("ul");
+	projectUl.classList = "project-ul";
+	const addProjectBtn = document.createElement("div");
+	addProjectBtn.classList = "add-project-btn flex";
+	createSvgIcon(addProjectBtn, addIcon);
+
+	const addProjectBtnText = document.createElement("input");
+	addProjectBtnText.classList = "add-input";
+	addProjectBtnText.placeholder = "Add New";
+
+	const colorWrapper = document.createElement("div");
+	colorWrapper.classList = "color-wrapper flex";
+	const colorSelect = document.createElement("input");
+	colorSelect.setAttribute("type", "color");
+	colorSelect.classList = "color-selector";
+	colorWrapper.appendChild(colorSelect);
+	colorSelect.value = getRandomColor();
+	function getRandomColor() {
+		var letters = "0123456789ABCDEF".split("");
+		var color = "#";
+		for (var i = 0; i < 6; i++) {
+			color += letters[Math.round(Math.random() * 15)];
+		}
+		return color;
+	}
+
+	// colorWrapper.style.backgroundColor = c
+
+	const projectOkayBtn = document.createElement("button");
+	createSvgIcon(projectOkayBtn, plusIcon);
+	projectOkayBtn.classList = "project-okay-btn flex";
+	// projectOkayBtn.style.display = 'flex'
+
+	addProjectBtn.append(addProjectBtnText);
+	addProjectBtn.append(colorWrapper);
+	addProjectBtn.append(projectOkayBtn);
+
+	projectUlContainer.append(projectUl, addProjectBtn);
+
+	const tags = createList("Tags", tagIcon);
+	const tagsUlContainer = document.createElement("li");
+	tagsUlContainer.classList = "tag-ul-container";
+	tagsUlContainer.style.display = "none";
+	const tagsUl = document.createElement("ul");
+	tagsUl.classList = "tag-ul flex";
+	const addTagBtn = document.createElement("div");
+	addTagBtn.classList = "add-tag-btn flex";
+	createSvgIcon(addTagBtn, addIcon);
+
+	const addTagBtnText = document.createElement("input");
+	addTagBtnText.classList = "add-input";
+	addTagBtnText.placeholder = "Add New";
+
+	const tagOkayBtn = document.createElement("button");
+	createSvgIcon(tagOkayBtn, plusIcon);
+	tagOkayBtn.classList = "tag-okay-btn flex";
+	// okayBtn.style.display = 'flex'
+
+	addTagBtn.append(addTagBtnText);
+	addTagBtn.append(tagOkayBtn);
+
+	tagsUlContainer.append(tagsUl, addTagBtn);
+
+	menu.append(
+		overview,
+		today,
+		inbox,
+		project,
+		projectUlContainer,
+		tags,
+		tagsUlContainer
+	);
 
 	const extra = document.createElement("div");
 	extra.className = "extra";
@@ -71,7 +152,7 @@ function renderAside() {
 }
 
 // MAIN
-function renderMain() {
+export function renderMain() {
 	const main = document.createElement("main");
 	main.classList = "main";
 
@@ -91,6 +172,7 @@ function renderMain() {
 	searchInput.setAttribute("name", "search");
 	searchInput.setAttribute("id", "search");
 	searchInput.setAttribute("placeholder", "Search");
+	searchInput.id = "search-bar";
 
 	searchContainer.append(searchLabel, searchInput);
 
@@ -167,14 +249,14 @@ function renderMain() {
 	return main;
 }
 
-app.append(renderAside(), renderMain());
+// app.append(renderAside(), renderMain());
 
 // Task Card
-export function createTaskCard(obj) {
+export function createTaskCard(obj, colors) {
 	const card = document.createElement("div");
 	card.classList = "card flex";
 
-	if (obj.status === false) {
+	if (obj.getStatus() === "false") {
 		card.classList.add("completed");
 	} else card.classList.remove("completed");
 
@@ -194,10 +276,10 @@ export function createTaskCard(obj) {
 
 	const cardTitle = document.createElement("h3");
 	cardTitle.classList = "card__title";
-	cardTitle.textContent = obj.title;
+	cardTitle.textContent = obj.getTitle() || "No Title";
 	const cardDescription = document.createElement("p");
 	cardDescription.classList = "card__description";
-	cardDescription.textContent = obj.description;
+	cardDescription.textContent = obj.getDescription();
 	const cardExtras = document.createElement("div");
 	cardExtras.classList = "card__extras flex";
 
@@ -205,15 +287,23 @@ export function createTaskCard(obj) {
 	cardExtrasTags.classList = "card__tags flex";
 	createSvgIcon(cardExtrasTags, tagIcon);
 
+	const tags = obj.getTags();
 	// loop tags to render all tags
-	for (let i = 0; i < obj.tags.length; i++) {
-		const element = obj.tags[i];
+	for (let i = 0; i < tags.length; i++) {
+		const element = tags[i];
 
 		const tag = document.createElement("span");
 		tag.classList = "card__tag";
 		tag.textContent = element;
 
-		cardExtrasTags.append(tag);
+		if (i < 3) {
+			cardExtrasTags.append(tag);
+		} else if (i === 3) {
+			const p = document.createElement("span");
+			p.classList = "card__tag ellipsis";
+			createSvgIcon(p, dotsHorizontal)
+			cardExtrasTags.appendChild(p);
+		}
 	}
 
 	// Priority
@@ -221,8 +311,8 @@ export function createTaskCard(obj) {
 	cardExtrasFlagContainer.classList = "card__flag-container flex";
 	createSvgIcon(cardExtrasFlagContainer, flagIcon);
 	const cardExtrasFlag = document.createElement("span");
-	cardExtrasFlag.textContent = obj.priority;
-	let flag = obj.priority;
+	let flag = obj.getPriority();
+	cardExtrasFlag.textContent = flag;
 	let flagColor;
 	switch (flag) {
 		case "high":
@@ -244,11 +334,11 @@ export function createTaskCard(obj) {
 
 	const cardExtrasProject = document.createElement("span");
 	cardExtrasProject.classList = "card__project";
-	cardExtrasProject.textContent = obj.category;
+	cardExtrasProject.textContent = obj.getCategory();
 	const projectColor = document.createElement("div");
 	projectColor.classList = "card__project-color";
-	projectColor.style.backgroundColor = obj.categoryColor;
-	console.log(obj.category);
+	projectColor.style.backgroundColor = colors[obj.getCategory()] || "#6aa7b3";
+
 	cardExtras.append(
 		cardExtrasTags,
 		cardExtrasFlagContainer,
@@ -276,26 +366,37 @@ function createTasksListContainer() {
 
 	// Completed Tasks
 	const completedTasksList = document.createElement("div");
-	completedTasksList.classList = "completed-tasks tasks";
+	completedTasksList.classList = "completed-tasks-list flex";
+
+
 	const completedTasksListHeading = document.createElement("div");
 	completedTasksListHeading.classList = "list-heading flex";
 	const completedTasksListTitle = document.createElement("h3");
 	completedTasksListTitle.textContent = "Completed";
 	const completedTasksListCount = document.createElement("span");
-	completedTasksListCount.textContent = "5";
+	completedTasksListCount.textContent = "0";
+
+	const icon = document.createElement('div');
+	icon.classList = 'completed-icon'
+	createSvgIcon(icon, arrowDownIcon)
 
 	completedTasksListHeading.append(
 		completedTasksListTitle,
-		completedTasksListCount
+		completedTasksListCount,
+		icon
 	);
 
-	completedTasksList.append(completedTasksListHeading);
+	const completedTasks = document.createElement('div');
+	completedTasks.classList = 'completed-tasks tasks'
+
+
+	completedTasksList.append(completedTasksListHeading, completedTasks);
 
 	cardContainer.append(uncompletedTasks, completedTasksList);
 	return listCardContainer;
 }
 
-function expandCard(expandCardObj = { checkLists: [] }) {
+function expandCard(expandCardObj, colors) {
 	const blur = document.createElement("div");
 	blur.classList = "e-card-blur";
 
@@ -304,9 +405,20 @@ function expandCard(expandCardObj = { checkLists: [] }) {
 
 	blur.appendChild(background);
 
-	const eCardTop = document.createElement("p");
-	eCardTop.textContent = expandCardObj.category || "Category";
-	eCardTop.classList = "e-card__top";
+	const eCardTop = document.createElement("div");
+	const eCardTopText = document.createElement("p");
+	eCardTop.appendChild(eCardTopText);
+	const eCardTopIcon = document.createElement("span");
+	createSvgIcon(eCardTopIcon, arrowDownIcon);
+	eCardTop.appendChild(eCardTopIcon);
+	eCardTopText.textContent = expandCardObj.getCategory() || "Inbox";
+	eCardTop.classList = "e-card__category dropdown-select dropdown";
+	eCardTop.style.outlineColor =
+		`${colors[expandCardObj.getCategory()]}` || "#6aa7b3";
+
+	const eCardCategoryOpen = document.createElement("ul");
+	eCardCategoryOpen.classList = "e-card__category-container";
+	eCardTop.appendChild(eCardCategoryOpen);
 
 	const eCardClose = document.createElement("div");
 	eCardClose.classList = "e-card__close btn";
@@ -318,7 +430,8 @@ function expandCard(expandCardObj = { checkLists: [] }) {
 	const eCardTitle = document.createElement("textarea");
 	eCardTitle.setAttribute("maxlength", "60");
 
-	eCardTitle.value = expandCardObj.title || "Title";
+	eCardTitle.value = expandCardObj.getTitle() || "";
+	eCardTitle.placeholder = "Add Title";
 	eCardTitle.classList = "e-card__title";
 	const eCardEdit = document.createElement("div");
 
@@ -339,24 +452,14 @@ function expandCard(expandCardObj = { checkLists: [] }) {
 	const statusOpt0 = document.createElement("option");
 	statusOpt0.textContent = "Pending";
 	statusOpt0.setAttribute("value", "true");
-	statusOpt0.setAttribute("name", "pending");
 	const statusOpt1 = document.createElement("option");
 	statusOpt1.textContent = "Completed";
 	statusOpt1.setAttribute("value", "false");
-	statusOpt1.setAttribute("name", "completed");
-
-	if (expandCardObj.status === true) {
-		statusOpt0.setAttribute("selected", "");
-	}
-	if (expandCardObj.status === false) {
-		statusOpt1.setAttribute("selected", "");
-	}
-
-	console.log(eCardStatusValue.value);
 
 	eCardStatusValue.append(statusOpt0, statusOpt1);
-
 	eCardStatusValue.className = "e-card__status-value";
+	eCardStatusValue.value = expandCardObj.getStatus();
+
 	eCardStatus.append(eCardStatusName, eCardStatusValue);
 
 	const eCardDate = document.createElement("div");
@@ -366,6 +469,7 @@ function expandCard(expandCardObj = { checkLists: [] }) {
 	eCardDateName.classList = "e-card__date-name";
 	const eCardDateValue = document.createElement("input");
 	eCardDateValue.setAttribute("type", "date");
+	eCardDateValue.value = expandCardObj.getDueDate();
 
 	eCardDateValue.classList = "e-card__date-value";
 	eCardDate.append(eCardDateName, eCardDateValue);
@@ -377,7 +481,34 @@ function expandCard(expandCardObj = { checkLists: [] }) {
 	eCardTagName.classList = "e-card__tag-name";
 	const eCardTagValue = document.createElement("div");
 	eCardTagValue.classList = "e-card__tag-value flex";
-	eCardTag.append(eCardTagName, eCardTagValue);
+
+	const tags = expandCardObj.getTags();
+	// loop tags to render all tags
+	for (let i = 0; i < tags.length; i++) {
+		const element = tags[i];
+
+		const tag = document.createElement("span");
+		tag.classList = "e-card__tag-item";
+		tag.textContent = element;
+
+		if (i < 5) {
+			eCardTagValue.append(tag);
+		} else if (i === 5) {
+			const p = document.createElement("span");
+			p.classList = "expand-tags ellipsis";
+			createSvgIcon(p, dotsHorizontal);
+			eCardTagValue.appendChild(p);
+		}
+	}
+	const eCardTagBtn = document.createElement("div");
+	eCardTagBtn.classList = "tag-list-btn dropdown flex";
+	createSvgIcon(eCardTagBtn, plusCircleIcon);
+
+	const eCardTagOpen = document.createElement("ul");
+	eCardTagOpen.classList = "e-card__tag-container";
+	eCardTagBtn.appendChild(eCardTagOpen);
+
+	eCardTag.append(eCardTagName, eCardTagValue, eCardTagBtn);
 
 	const eCardPriority = document.createElement("div");
 	eCardPriority.classList = "e-card__priority flex";
@@ -388,33 +519,20 @@ function expandCard(expandCardObj = { checkLists: [] }) {
 
 	const priOpt0 = document.createElement("option");
 	priOpt0.textContent = "None";
-	priOpt0.setAttribute("value", "none");
-	priOpt0.setAttribute("name", "none");
+	priOpt0.setAttribute("value", "");
 	const priOpt1 = document.createElement("option");
 	priOpt1.textContent = "Low";
 	priOpt1.setAttribute("value", "low");
-	priOpt1.setAttribute("name", "low");
 	const priOpt2 = document.createElement("option");
 	priOpt2.textContent = "Medium";
 	priOpt2.setAttribute("value", "medium");
-	priOpt2.setAttribute("name", "medium");
 	const priOpt3 = document.createElement("option");
 	priOpt3.textContent = "High";
 	priOpt3.setAttribute("value", "high");
-	priOpt3.setAttribute("name", "high");
-
-	if (expandCardObj.priority === "none") {
-		priOpt0.setAttribute("selected", "");
-	} else if (expandCardObj.priority === "low") {
-		priOpt1.setAttribute("selected", "");
-	} else if (expandCardObj.priority === "medium") {
-		priOpt2.setAttribute("selected", "");
-	} else if (expandCardObj.priority === "hard") {
-		priOpt3.setAttribute("selected", "");
-	}
 
 	eCardPriorityValue.append(priOpt0, priOpt1, priOpt2, priOpt3);
 
+	eCardPriorityValue.value = expandCardObj.getPriority();
 	eCardPriorityValue.classList = "e-card__priority-value";
 	eCardPriority.append(eCardPriorityName, eCardPriorityValue);
 
@@ -424,7 +542,8 @@ function expandCard(expandCardObj = { checkLists: [] }) {
 	const eCardDescriptionArea = document.createElement("div");
 	eCardDescriptionArea.classList = "e-card__description-area";
 	const eCardDescriptionText = document.createElement("textarea");
-	eCardDescriptionText.value = expandCardObj.description;
+	eCardDescriptionText.value = expandCardObj.getDescription() || "";
+	eCardDescriptionText.placeholder = "Add description";
 	eCardDescriptionArea.appendChild(eCardDescriptionText);
 
 	// Expanded Card Checklist
@@ -439,54 +558,13 @@ function expandCard(expandCardObj = { checkLists: [] }) {
 	const eCardTodoList = document.createElement("div");
 	eCardTodoList.classList = "e-card__todo-list";
 
-	// Expanded Card Checklist Item
-	function expandedCardCheckListItem(obj) {
-		const eCardTodoItem = document.createElement("div");
-		eCardTodoItem.classList = "e-card__todo-item flex";
-
-		if (obj.status === false) {
-			eCardTodoItem.classList.add("completed");
-		} else eCardTodoItem.classList.remove("completed");
-
-		// Check button
-		const eCardTodoItemCheck = document.createElement("div");
-		eCardTodoItemCheck.classList = "e-card__todo-check";
-		const eCardTodoItemCheckOuter = document.createElement("div");
-		eCardTodoItemCheckOuter.classList = "e-card__todo-check-outer";
-		const eCardTodoItemCheckInner = document.createElement("div");
-		eCardTodoItemCheckInner.classList =
-			"e-card__todo-check-inner checklist-done";
-		createSvgIcon(eCardTodoItemCheckInner, tickIcon);
-
-		eCardTodoItemCheckOuter.appendChild(eCardTodoItemCheckInner);
-
-		eCardTodoItemCheck.appendChild(eCardTodoItemCheckOuter);
-
-		// Check list text
-		const eCardTodoItemText = document.createElement("input");
-		eCardTodoItemText.setAttribute("maxlength", "40");
-		eCardTodoItemText.value = obj.description || "";
-		eCardTodoItemText.classList = "e-card__todo-text";
-		const eCardTodoItemDelete = document.createElement("div");
-		// Check list delete icon
-		eCardTodoItemDelete.classList = "e-card__todo-delete";
-		createSvgIcon(eCardTodoItemDelete, deleteIcon);
-
-		eCardTodoItem.append(
-			eCardTodoItemCheck,
-			eCardTodoItemText,
-			eCardTodoItemDelete
-		);
-		return eCardTodoItem;
-	}
-
 	// let objCheckList = expandCardObj.checkLists;
 	// Call check list items
-	renderCheckList(expandCardObj.checkLists);
+	console.log(expandCardObj.getCheckLists());
+	renderCheckList(expandCardObj.getCheckLists());
 	function renderCheckList(obj) {
-		for (let i = 0; i < obj.length; i++) {
+		for (let i = obj.length - 1; i >= 0; i--) {
 			const element = obj[i];
-
 			eCardTodoList.appendChild(expandedCardCheckListItem(element));
 		}
 	}
@@ -494,7 +572,7 @@ function expandCard(expandCardObj = { checkLists: [] }) {
 	const eCardFooter = document.createElement("div");
 	eCardFooter.classList = "e-card__footer flex";
 	const eCardProject = document.createElement("div");
-	eCardProject.textContent = "Inbox";
+	eCardProject.textContent = expandCardObj.getCreationDate();
 	eCardProject.classList = "e-card__project";
 	const eCardCancel = document.createElement("button");
 	eCardCancel.textContent = "Cancel";
@@ -522,9 +600,49 @@ function expandCard(expandCardObj = { checkLists: [] }) {
 
 	return blur;
 }
+// Expanded Card Checklist Item
+function expandedCardCheckListItem(obj) {
+	const eCardTodoItem = document.createElement("div");
+	eCardTodoItem.classList = "e-card__todo-item flex";
+	eCardTodoItem.setAttribute("data-pos", `${obj.uniqueId}`);
+
+	if (obj.status === false) {
+		eCardTodoItem.classList.add("completed");
+	} else eCardTodoItem.classList.remove("completed");
+
+	// Check button
+	const eCardTodoItemCheck = document.createElement("div");
+	eCardTodoItemCheck.classList = "e-card__todo-check";
+	const eCardTodoItemCheckOuter = document.createElement("div");
+	eCardTodoItemCheckOuter.classList = "e-card__todo-check-outer";
+	const eCardTodoItemCheckInner = document.createElement("div");
+	eCardTodoItemCheckInner.classList = "e-card__todo-check-inner checklist-done";
+	createSvgIcon(eCardTodoItemCheckInner, tickIcon);
+
+	eCardTodoItemCheckOuter.appendChild(eCardTodoItemCheckInner);
+
+	eCardTodoItemCheck.appendChild(eCardTodoItemCheckOuter);
+
+	// Check list text
+	const eCardTodoItemText = document.createElement("input");
+	eCardTodoItemText.setAttribute("maxlength", "40");
+	eCardTodoItemText.value = obj.description || "";
+	eCardTodoItemText.classList = "e-card__todo-text";
+	const eCardTodoItemDelete = document.createElement("div");
+	// Check list delete icon
+	eCardTodoItemDelete.classList = "e-card__todo-delete";
+	createSvgIcon(eCardTodoItemDelete, deleteIcon);
+
+	eCardTodoItem.append(
+		eCardTodoItemCheck,
+		eCardTodoItemText,
+		eCardTodoItemDelete
+	);
+	return eCardTodoItem;
+}
 
 const unCompletedList = document.querySelector(".uncompleted-tasks");
 
 const completedList = document.querySelector(".completed-tasks");
 
-export { expandCard };
+export { expandCard, expandedCardCheckListItem };

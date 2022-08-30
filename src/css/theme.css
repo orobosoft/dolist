@@ -1,0 +1,73 @@
+@media (prefers-color-scheme: light) {
+	img {
+		opacity: 0.75;
+		transition: opacity 0.5s ease-in-out;
+	}
+	img:hover {
+		opacity: 1;
+	}
+}
+
+html[data-theme="dark"] {
+	--text-color-normal: hsl(210, 10%, 62%);
+	--text-color-light: hsl(210, 15%, 35%);
+	--text-color-richer: hsl(210, 50%, 72%);
+	--text-color-highlight: hsl(25, 70%, 45%);
+}
+
+/* LIGHT THEME */
+.light {
+
+  --bg-color: rgb(255, 255, 255);
+  --bg-color-t: 255, 255, 255;
+
+
+	--color-1: #e0e8e7;
+	--color-2: #bccac1;
+
+	--color-4: #5f5f5f;
+	--color-4-t: 95, 95, 95;
+	--color-6: #2f3433;
+	--color-6-t: 47, 52, 51;
+
+
+	--color-3: #6aa7b3;
+	--color-7: #f04c0f;
+
+}
+body.light {
+	color: var(--color-4);
+  background-color: var(--bg-color);
+}
+
+/* DARK THEME */
+.dark {
+  --bg-color: #222;
+  --bg-color-t: 34, 34, 34;
+
+
+	--color-1: #2f3433;
+  --color-2: #5f5f5f;
+
+	--color-4: #bccac1;
+	--color-4-t: 188, 202, 193;
+	--color-6: #e0e8e7;
+	--color-6-t: 224, 232, 231;
+
+
+	--color-3: #6aa7b3;
+	--color-7: #f04c0f;
+  /* --text-color: # */
+}
+body.dark {
+	color: var(--color-4);
+  background-color: var(--bg-color);
+}
+
+.dark img {
+	opacity: 0.75;
+	transition: opacity 0.5s ease-in-out;
+}
+.dark img:hover {
+	opacity: 1;
+}

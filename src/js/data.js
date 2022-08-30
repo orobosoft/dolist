@@ -1,78 +1,43 @@
 import category from "./category";
+import tag from "./tag";
+import todo from "./todo-items";
 import { createTaskCard, expandCard } from "./view";
 
-let defTasksArray = [];
+// Todo Array
+const todoArray = [];
+// Category Array
+const categoryArray = [];
+// Tag Array
+const tagArray = [];
+// const checkListArray = []
 
+for (let i = 0; i < 20; i++) {
+	const newTag = tag().createTag("Tag: " + i);
+	tagArray.push(newTag);
+}
+
+let ccc = 0;
 for (let i = 0; i < 10; i++) {
-	let item = {};
-	item.status = true;
-	item.title = `This is a demo (${i + 1})`;
-	item.description = "This will be the first demo description";
-	item.dueDate = "DATE";
-	item.creationDate = "Date Created";
-	item.priority = "medium";
-	item.tags = ["Dev", "Web", "Book", "Success"];
-	item.category = "Inbox";
-	item.categoryColor = "#000";
-	item.note = null;
-	item.checkLists = [];
-
-	for (let i = 0; i < 4; i++) {
-		let checkList = {};
-		checkList.status = true;
-		checkList.description = `This is a checklist demo (${i + 1})`;
-
-		item.checkLists.push(checkList);
+	const newTodo = todo().createTodoItem();
+	newTodo.setTitle("Task " + ++ccc);
+	for (let i = 0; i < 5; i++) {
+		newTodo.addCheckList("Check " + i);
 	}
-	defTasksArray.push(item);
-}
-for (let i = 0; i < 10; i++) {
-	let item = {};
-	item.status = false;
-	item.title = `This is a demo (${i + 1})`;
-	item.description = "This will be the first demo description";
-	item.dueDate = "DATE";
-	item.creationDate = "Date Created";
-	item.priority = "medium";
-	item.tags = ["Dev", "Web", "Book", "Success"];
-	item.category = "Inbox";
-	item.categoryColor = "#000";
-	item.note = null;
-	item.checkLists = [];
-
-	for (let i = 0; i < 4; i++) {
-		let checkList = {};
-		checkList.status = true;
-		checkList.description = `This is a checklist demo (${i + 1})`;
-		item.checkLists.push(checkList);
+	for (let i = 0; i < 14; i++) {
+		newTodo.addTag("Tag: " + i);
 	}
-	defTasksArray.push(item);
+
+	todoArray.push(newTodo);
 }
-
-const app = document.querySelector(".app");
-const unCompletedList = document.querySelector(".uncompleted-tasks");
-const completedList = document.querySelector(".completed-tasks");
-
-console.log(category().getCategories()[category]);
-
-// loop Task Array to render all cards
-for (let i = 0; i < defTasksArray.length; i++) {
-	const element = defTasksArray[i];
-	if (element.status === true) {
-		unCompletedList.append(createTaskCard(element));
-	} else if (element.status === false) {
-		completedList.append(createTaskCard(element));
-	}
+for (let i = 0; i < 5; i++) {
+	let cat = category().createCategory("Cate " + i);
+	categoryArray.push(cat)
 }
+let count = 0;
 
 
+todo().setTodoItemList(todoArray);
 
-const card = document.querySelectorAll(".card");
+category().setCategories(categoryArray);
 
-Array.from(card).forEach((element, index) => {
-	element.addEventListener("click", (e) => expandView(e, index));
-});
-
-function expandView(e, i) {
-	app.append(expandCard(defTasksArray[i]));
-}
+tag().setTags(tagArray);

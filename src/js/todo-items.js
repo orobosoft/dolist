@@ -1,19 +1,32 @@
 // Factory for Todo Items
-const TodoItem = () => {
-	let title = null;
-	let description = null;
-	let dueDate = null;
-	let creationDate = null;
-	let priority = null;
-	let category = 'Inbox';
-	let note = null;
+const TodoItem = (...arg) => {
+	let title = "";
+	let description = "";
+	let dueDate = getCurrentDate();
+	let creationDate = getCurrentDate();
+	let priority = "";
+	let category = "Inbox";
+	let note = "";
 	let status = true;
+	const uniqueId = uid();
+	function uid() {
+		return String(Date.now().toString(32) + Math.random().toString(16)).replace(
+			/\./g,
+			""
+		);
+	}
 
+	const getUniqueId = () => {
+		return uniqueId;
+	};
 	const getStatus = () => {
 		return status;
 	};
+	const setStatus = (newStatus) => {
+		status = newStatus;
+	};
 	const toggleStatus = () => {
-		title = status === true ? false : true;
+		status = status === true ? false : true;
 	};
 	const getTitle = () => {
 		return title;
@@ -46,6 +59,7 @@ const TodoItem = () => {
 		priority = newPriority;
 	};
 
+	let tags = [];
 	// Tags
 	const getTags = () => {
 		return tags;
@@ -54,7 +68,6 @@ const TodoItem = () => {
 		tags = newTags;
 	};
 
-	let tags = []
 	const addTag = (input) => {
 		tags.push(input);
 	};
@@ -92,7 +105,14 @@ const TodoItem = () => {
 		let checkList = {};
 		checkList.description = input;
 		checkList.status = true;
+		checkList.uniqueId = uid();
+		function uid() {
+			return String(
+				Date.now().toString(32) + Math.random().toString(16)
+			).replace(/\./g, "");
+		}
 		checkLists.push(checkList);
+		return checkList;
 	};
 	const deleteCheckList = (checkListIndex) => {
 		for (let i = checkLists.length - 1; i >= 0; i--) {
@@ -103,7 +123,9 @@ const TodoItem = () => {
 	};
 
 	return {
+		getUniqueId,
 		getStatus,
+		setStatus,
 		toggleStatus,
 		getTitle,
 		setTitle,
@@ -131,7 +153,7 @@ const TodoItem = () => {
 };
 
 // Create, get, set and delete todo-items
-let todoItemList = [];
+export let todoItemList = [];
 export default function todo() {
 	const getTodoItemList = () => {
 		return todoItemList;
@@ -141,19 +163,10 @@ export default function todo() {
 	};
 
 	// Create todo-items and push to todo-list
-	const createTodoItem = (itemData = {}) => {
+	const createTodoItem = () => {
 		const newTodoItem = TodoItem();
-
-		newTodoItem.setTitle(itemData.title);
-		newTodoItem.setDescription(itemData.description);
-		newTodoItem.setPriority(itemData.priority);
-		newTodoItem.setCategory(itemData.category);
-		newTodoItem.setDueDate(itemData.dueDate);
-		newTodoItem.setCreationDate(itemData.creationDate);
-		newTodoItem.setNote(itemData.note);
-		newTodoItem.setCheckLists(itemData.checkLists);
-
 		todoItemList.push(newTodoItem);
+		return newTodoItem;
 	};
 
 	const deleteTodoItem = (todoItemIndex) => {
@@ -171,4 +184,13 @@ export default function todo() {
 		createTodoItem,
 		deleteTodoItem,
 	};
+}
+
+function getCurrentDate() {
+	const date = new Date();
+	const day = ("0" + date.getDate()).slice(-2);
+	const month = ("0" + date.getMonth()).slice(-2);
+	const year = date.getFullYear();
+
+	return `${year}-${month}-${day}`;
 }

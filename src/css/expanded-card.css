@@ -22,7 +22,7 @@
 	width: 50rem;
 	height: 60rem;
 	border-radius: 2rem;
-	outline: 2px solid rgba(106, 167, 179, 0.15);
+	outline: 2px solid rgba(var(--color-3-t), 0.15);
 	padding: 2.5rem;
 	padding-right: 1.5rem;
 
@@ -32,6 +32,9 @@
 }
 
 .e-card__close {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	position: absolute;
 	top: 15px;
 	right: 10px;
@@ -50,14 +53,15 @@
 }
 
 .e-card__close:hover,
-.e-card__edit:hover,
-.e-card__delete:hover {
-	background-color: var(--color-1);
-	color: var(--color-6);
+.e-card__edit:hover{
+	background-color: rgba(var(--color-3-t),.5);
+	color: var(--color-5);
+	outline: none;
 }
-
-.e-card__close:hover svg {
-	color: var(--color-6);
+.e-card__delete:hover {
+	background-color: rgb(212, 18, 18);
+	color: #fff;
+	outline: none;
 }
 
 .e-card__title {
@@ -143,6 +147,15 @@
 	color: var(--color-6);
 }
 
+.e-card__category {
+	outline: 2px solid var(--color-3);
+	font-size: 1.4rem;
+
+}
+.e-card__category:hover {
+	outline-width: 2px;
+
+}
 .e-card__category-container {
 	gap: 10px;
 	min-width: 7rem;
@@ -173,7 +186,7 @@
 	color: var(--color-4);
 	padding: 10px;
 	resize: none;
-	background-color: rgba(var(--color-4-t), 0.1);
+	background-color: rgba(var(--color-3-t), 0.1);
 	border-radius: 1rem;
 	-webkit-border-radius: 1rem;
 	-moz-border-radius: 1rem;
@@ -190,12 +203,12 @@
 }
 .e-card__todo-add {
 	width: 100%;
-	text-shadow: var(--bg-color) 1px 1px 2px;
+	/* text-shadow: var(--bg-color) 1px 1px 2px; */
 	font-size: 1.6rem;
 	font-weight: bold;
 	border: none;
 	color: var(--color-3);
-	background-color: rgba(106, 167, 179, 0.3);
+	background-color: rgba(var(--color-3-t), 0.3);
 	padding: 4px;
 	border-radius: 5px;
 	-webkit-border-radius: 5px;
@@ -205,7 +218,8 @@
 	margin-bottom: 1rem;
 }
 .e-card__todo-add:hover {
-	color: var(--color-6);
+	background-color: rgba(var(--color-3-t),.4);
+	color: var(--color-5);
 }
 .e-card__todo-list {
 	flex-direction: column;
@@ -266,6 +280,9 @@
 }
 
 .e-card__todo-delete {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	margin-left: auto;
 	height: 24px;
 	width: 24px;
@@ -305,7 +322,7 @@
 }
 .e-card__save {
 	background-color: var(--color-3);
-	color: var(--bg-color);
+	color: var(--color-5);
 }
 .e-card__save:hover {
 	/* background-color: var(--color-5); */

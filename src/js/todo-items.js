@@ -8,7 +8,7 @@ const TodoItem = (...arg) => {
 	let category = "Inbox";
 	let note = "";
 	let status = true;
-	const uniqueId = uid();
+	let uniqueId = uid();
 	function uid() {
 		return String(Date.now().toString(32) + Math.random().toString(16)).replace(
 			/\./g,
@@ -18,6 +18,9 @@ const TodoItem = (...arg) => {
 
 	const getUniqueId = () => {
 		return uniqueId;
+	};
+	const setUniqueId = (newId) => {
+		uniqueId = newId;
 	};
 	const getStatus = () => {
 		return status;
@@ -124,6 +127,7 @@ const TodoItem = (...arg) => {
 
 	return {
 		getUniqueId,
+		setUniqueId,
 		getStatus,
 		setStatus,
 		toggleStatus,
@@ -155,6 +159,7 @@ const TodoItem = (...arg) => {
 // Create, get, set and delete todo-items
 export let todoItemList = [];
 export default function todo() {
+
 	const getTodoItemList = () => {
 		return todoItemList;
 	};

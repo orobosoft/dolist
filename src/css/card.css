@@ -12,11 +12,11 @@
 	-moz-border-radius: 1rem;
 	-ms-border-radius: 1rem;
 	-o-border-radius: 1rem;
-	transition: all .2s ease-in-out;
+	/* transition: all .2s ease-in-out;
 	-webkit-transition: all .2s ease-in-out;
 	-moz-transition: all .2s ease-in-out;
 	-ms-transition: all .2s ease-in-out;
-	-o-transition: all .2s ease-in-out;
+	-o-transition: all .2s ease-in-out; */
 }
 .card:hover{
 	box-shadow: var(--color-3) 0px 0px 0px 2px, var(--color-3) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset;

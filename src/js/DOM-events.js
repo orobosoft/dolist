@@ -1,34 +1,35 @@
 import category, { categories } from "./category";
-import { createSvgIcon, dotsHorizontal } from "./icons";
+import { updateLocalStorage } from "./data";
+import {
+	createSvgIcon,
+	dayAndNightIcon,
+	dayIcon,
+	dotsHorizontal,
+	nightIcon,
+} from "./icons";
+import { updateMediaQuery } from "./media-query";
 import tag, { tags } from "./tag";
 import todo, { todoItemList } from "./todo-items";
 import {
 	createTaskCard,
 	expandedCardCheckListItem,
 	expandCard,
-	renderAside,
-	renderMain,
 } from "./view";
 
-// Initial Load
-app.append(renderAside(), renderMain());
 
 // Colors
 let colors = getColors;
 function getColors() {
 	let colors = {};
-	colors["Inbox"] = "#6aa7b3";
+	const html = getComputedStyle(document.querySelector("html"));
+	const accent = html.getPropertyValue("--color-3");
+	colors["Inbox"] = accent;
 	for (let i = 0; i < categories.length; i++) {
 		const element = categories[i];
 		colors[element.getCategoryName()] = element.getCategoryColor();
 	}
 	return colors;
 }
-
-// Data Properties
-const tagArray = tags;
-const todoArray = todoItemList;
-const categoryArray = categories;
 
 let currentArray;
 let searchArray;
@@ -50,24 +51,92 @@ const addBtn = document.querySelector(".btn-add");
 const unCompletedList = document.querySelector(".uncompleted-tasks");
 const completedList = document.querySelector(".completed-tasks");
 
+// Theme Switcher
+// media query for default theme
+const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
+// media query event
+prefersDark.addEventListener("change", (e) => {
+	systemTheme(e.matches);
+});
+// load default theme
+systemTheme(prefersDark.matches);
+
+// Event to load & select theme
+document.addEventListener("click", (e) => {
+	loadTheme(e);
+	selectTheme(e);
+});
+
+// Theme functions
+const loadTheme = (e) => {
+	let theme = document.querySelector(".theme ul");
+	if (e.target.classList.contains("theme")) {
+		if (theme.style.display === "" || theme.style.display === "none") {
+			theme.style.display = "flex";
+		} else theme.style.display = "none";
+	} else theme.style.display = "none";
+};
+const selectTheme = (e) => {
+	if (e.target.classList.contains("theme-dark")) {
+		darkTheme();
+	} else if (e.target.classList.contains("theme-light")) {
+		lightTheme();
+	} else if (e.target.classList.contains("theme-system")) {
+		systemTheme(prefersDark.matches);
+	}
+};
+export function autoTheme(theme) {
+	theme === "light"
+		? lightTheme()
+		: theme === "dark"
+		? darkTheme()
+		: systemTheme();
+}
+function systemTheme(isDark) {
+	const doc = document.querySelector("html");
+	const icon = document.querySelector(".theme-icon");
+	const path = document.querySelector(".theme-icon path");
+	path.setAttribute("d", dayAndNightIcon);
+	icon.classList = "theme-icon theme-system";
+	if (isDark) {
+		doc.dataset.theme = "dark";
+	} else doc.dataset.theme = "light";
+}
+function darkTheme() {
+	const doc = document.querySelector("html");
+	const icon = document.querySelector(".theme-icon");
+	const path = document.querySelector(".theme-icon path");
+	doc.dataset.theme = "dark";
+	path.setAttribute("d", nightIcon);
+	icon.classList = "theme-icon theme-dark";
+}
+function lightTheme() {
+	const doc = document.querySelector("html");
+	const icon = document.querySelector(".theme-icon");
+	const path = document.querySelector(".theme-icon path");
+	doc.dataset.theme = "light";
+	path.setAttribute("d", dayIcon);
+	icon.classList = "theme-icon theme-light";
+}
+
 // Main Events
 addBtn.addEventListener("click", () => {
 	buttonFunction();
 });
 overview.addEventListener("click", () => {
-	openOverview(todoArray);
+	openOverview(todoItemList);
 });
 today.addEventListener("click", () => {
-	openToday(todoArray);
+	openToday(todoItemList);
 });
 inbox.addEventListener("click", () => {
-	openInbox(todoArray);
+	openInbox(todoItemList);
 });
 projectList.addEventListener("click", () => {
-	toggleProject(categoryArray);
+	toggleProject(categories);
 });
 tagList.addEventListener("click", () => {
-	renderTags(tagArray);
+	renderTags(tags);
 });
 searchBar.addEventListener("input", (e) => {
 	displaySearch(e);
@@ -91,11 +160,11 @@ export function openOverview(arr) {
 	const btn = function () {
 		todo().createTodoItem();
 
-		expandView(todoArray.length - 1);
-		addTodoEvent(todoArray[todoArray.length - 1]);
+		expandView(todoItemList.length - 1);
+		addTodoEvent(todoItemList[todoItemList.length - 1]);
 	};
 	buttonFunction = btn;
-	currentArray = () => todoArray;
+	currentArray = () => todoItemList;
 	displayTodo(arr);
 }
 
@@ -117,8 +186,8 @@ export function openToday(arr) {
 	const btn = function () {
 		todo().createTodoItem();
 
-		expandView(todoArray.length - 1);
-		addTodoEvent(todoArray[todoArray.length - 1], todoArray);
+		expandView(todoItemList.length - 1);
+		addTodoEvent(todoItemList[todoItemList.length - 1], todoItemList);
 	};
 	buttonFunction = btn;
 	currentArray = filtered;
@@ -127,7 +196,7 @@ export function openToday(arr) {
 }
 
 // Inbox Display
-function openInbox(arr) {
+export function openInbox(arr) {
 	title = "Inbox";
 	clearAddedStyle(menu, "selected-menu");
 	collapseTagMenu();
@@ -143,8 +212,8 @@ function openInbox(arr) {
 	const btn = function () {
 		todo().createTodoItem();
 
-		expandView(todoArray.length - 1);
-		addTodoEvent(todoArray[todoArray.length - 1], todoArray);
+		expandView(todoItemList.length - 1);
+		addTodoEvent(todoItemList[todoItemList.length - 1], todoItemList);
 	};
 	buttonFunction = btn;
 	currentArray = filtered;
@@ -207,17 +276,17 @@ function openProject() {
 				element.classList.add("selected-menu");
 
 				let filtered = function () {
-					return todoArray.filter((e) => {
+					return todoItemList.filter((e) => {
 						return e.getCategory() === name;
 					});
 				};
 
 				const btn = function () {
 					todo().createTodoItem();
-					todoArray[todoArray.length - 1].setCategory(name);
+					todoItemList[todoItemList.length - 1].setCategory(name);
 
-					expandView(todoArray.length - 1);
-					addTodoEvent(todoArray[todoArray.length - 1]);
+					expandView(todoItemList.length - 1);
+					addTodoEvent(todoItemList[todoItemList.length - 1]);
 				};
 				buttonFunction = btn;
 				currentArray = filtered;
@@ -228,7 +297,7 @@ function openProject() {
 }
 
 // Add Project Button
-function addProject(params) {
+function addProject() {
 	const ul = document.querySelector(".project-ul");
 	let name = document.querySelector(".add-project-btn .add-input").value;
 	let color = document.querySelector(".add-project-btn .color-selector").value;
@@ -236,7 +305,7 @@ function addProject(params) {
 	category().createCategory(name, color);
 	ul.replaceChildren();
 
-	showProjectList(categoryArray);
+	showProjectList(categories);
 	openProject();
 }
 
@@ -271,15 +340,15 @@ function loopTags(array) {
 }
 // Display the tag todo
 function openTag() {
-	const tags = document.querySelectorAll(".tag-ul li");
-	Array.from(tags).forEach((element, index) => {
+	const tagsElement = document.querySelectorAll(".tag-ul li");
+	Array.from(tagsElement).forEach((element, index) => {
 		element.addEventListener("click", (e) => {
 			clearAddedStyle(menu, "selected-menu");
-			clearAddedStyle(tags, "tag-selected");
+			clearAddedStyle(tagsElement, "tag-selected");
 
 			const filtered = () => {
 				const filteredArr = [];
-				todoArray.forEach((e, i) => {
+				todoItemList.forEach((e, i) => {
 					const t = e.getTags();
 					for (let n = 0; n < t.length; n++) {
 						if (t[n] === name) {
@@ -291,17 +360,17 @@ function openTag() {
 				return filteredArr;
 			};
 
-			const name = tagArray[index].getTagName();
+			const name = tags[index].getTagName();
 			title = "Tag: " + name;
 			header.textContent = title;
 			element.classList.add("tag-selected");
 
 			const btn = function () {
 				todo().createTodoItem();
-				todoArray[todoArray.length - 1].addTag(name);
+				todoItemList[todoItemList.length - 1].addTag(name);
 
-				expandView(todoArray.length - 1);
-				addTodoEvent(todoArray[todoArray.length - 1]);
+				expandView(todoItemList.length - 1);
+				addTodoEvent(todoItemList[todoItemList.length - 1]);
 			};
 			buttonFunction = btn;
 			currentArray = filtered;
@@ -318,7 +387,7 @@ function addTag(params) {
 	tag().createTag(name);
 	ul.replaceChildren();
 
-	loopTags(tagArray);
+	loopTags(tags);
 	openTag();
 }
 
@@ -346,6 +415,7 @@ function displayTodo(array) {
 			completedList.append(card);
 			card.classList.add("completed");
 		}
+		updateLocalStorage()
 	}
 	// Update tasks count
 	document.querySelector(".list-heading span").textContent = count1;
@@ -357,11 +427,11 @@ function displayTodo(array) {
 	cards.forEach((e, index) => {
 		e.addEventListener("click", (m) => {
 			if (m.target.classList.contains("outer-check")) {
-				for (let i = todoArray.length - 1; i >= 0; i--) {
-					const arrayId = todoArray[i].getUniqueId();
+				for (let i = todoItemList.length - 1; i >= 0; i--) {
+					const arrayId = todoItemList[i].getUniqueId();
 					const filteredId = e.dataset.pos;
 					if (filteredId === arrayId) {
-						todoArray[i].toggleStatus();
+						todoItemList[i].toggleStatus();
 						cards[index].classList.toggle("completed");
 						setTimeout(() => {
 							displayTodo(currentArray());
@@ -371,8 +441,8 @@ function displayTodo(array) {
 					}
 				}
 			} else {
-				for (let i = todoArray.length - 1; i >= 0; i--) {
-					const arrayId = todoArray[i].getUniqueId();
+				for (let i = todoItemList.length - 1; i >= 0; i--) {
+					const arrayId = todoItemList[i].getUniqueId();
 					const filteredId = e.dataset.pos;
 					if (filteredId === arrayId) {
 						expandView(i);
@@ -382,22 +452,30 @@ function displayTodo(array) {
 			}
 		});
 	});
+	updateMediaQuery();
 }
 
+// Completed tasks list
 document
 	.querySelector(".completed-tasks-list .list-heading")
 	.addEventListener("click", () => {
 		let c = document.querySelector(".completed-tasks");
+		let d = document.querySelector(".completed-tasks-list");
 
 		document
 			.querySelector(".completed-icon .span-icon")
 			.classList.toggle("rotate90");
 
-		if (c.style.display === "none" || c.style.display === "") {
-			c.style.display = "flex";
-		} else if (c.style.display === "flex") {
-			c.style.display = "none";
-		}
+		// if (c.style.display === "none" || c.style.display === "") {
+		// 	// c.style.display = "flex";
+		// 	d.style.height = 360+ "px";
+		// } else if (c.style.display === "flex") {
+		// 	// c.style.display = "none";
+		// 	d.style.height = 45+ 'px';
+		// }
+		if (d.clientHeight === 45) {
+			d.style.height = 45 + c.clientHeight + "px";
+		} else d.style.height = 45 + "px";
 	});
 
 // Add New Item Event
@@ -410,11 +488,11 @@ function addTodoEvent(e) {
 	const saveBtn = document.querySelector(".e-card__save");
 	const card = document.querySelector(".e-card-blur");
 	cancelBtn.addEventListener("click", () => {
-		todoArray.pop();
+		todoItemList.pop();
 		card.remove();
 	});
 	closeBtn.addEventListener("click", () => {
-		todoArray.pop();
+		todoItemList.pop();
 		card.remove();
 	});
 }
@@ -438,7 +516,7 @@ function toggleLoadCategory() {
 		li.textContent = "Inbox";
 		li.style.outlineColor = colors()[li.textContent];
 		ul.appendChild(li);
-		categoryArray.forEach((e) => {
+		categories.forEach((e) => {
 			const li = document.createElement("li");
 			li.classList = "e-card__category-item";
 			li.textContent = e.getCategoryName();
@@ -461,7 +539,7 @@ function toggleLoadTags() {
 			ul.replaceChildren();
 		}, 150);
 	} else if (ul.style.display === "none" || ul.style.display === "") {
-		tagArray.forEach((e) => {
+		tags.forEach((e) => {
 			const li = document.createElement("li");
 			li.classList = "tag-list-item";
 			li.textContent = e.getTagName();
@@ -475,7 +553,7 @@ function toggleLoadTags() {
 
 // Expanded Card Events
 function expandCardEvents(a) {
-	const todo = todoArray[a];
+	const todo = todoItemList[a];
 	const card = document.querySelector(".e-card-blur");
 	const eCard = document.querySelector(".e-card-bg");
 	const oldTodoChecklists = JSON.parse(JSON.stringify(todo.getCheckLists()));
@@ -532,7 +610,7 @@ function expandCardEvents(a) {
 		}
 		// DELETE todo
 		if (e.target.classList.contains("e-card__delete")) {
-			todoArray.splice(a, 1);
+			todoItemList.splice(a, 1);
 			displayTodo(currentArray());
 			card.remove();
 		}
@@ -597,10 +675,13 @@ function expandCardEvents(a) {
 			const parentId = e.target.parentNode.dataset.pos;
 			const cardList = document.querySelector(".e-card__todo-list");
 			const list = todo.getCheckLists();
-			for (let i = 0; i < list.length; i++) {
+
+			syncChecklists();
+
+			for (let i = list.length - 1; i >= 0; i--) {
 				if (parentId === list[i].uniqueId) {
 					list[i].status = list[i].status === true ? false : true;
-					list[i].description = e.target.nextSibling.value;
+					// list[i].description = e.target.nextSibling.value;
 
 					cardList.replaceChildren();
 					// list.forEach((e) => {
@@ -618,6 +699,8 @@ function expandCardEvents(a) {
 			const list = todo.getCheckLists();
 			const cardList = document.querySelector(".e-card__todo-list");
 			const parentId = e.target.parentNode.dataset.pos;
+
+			syncChecklists();
 
 			for (let i = 0; i < list.length; i++) {
 				if (parentId === list[i].uniqueId) {
@@ -639,6 +722,8 @@ function expandCardEvents(a) {
 
 			const cardList = document.querySelector(".e-card__todo-list");
 
+			syncChecklists();
+
 			todo.addCheckList();
 			cardList.replaceChildren();
 			// list.forEach((e) => {
@@ -650,6 +735,17 @@ function expandCardEvents(a) {
 			}
 		}
 	});
+	function syncChecklists() {
+		const list = todo.getCheckLists();
+		const tasks = document.querySelectorAll(".e-card__todo-item input");
+		let arr = [];
+		Array.from(tasks).forEach((e) => {
+			arr.unshift(e.value || "");
+		});
+		list.forEach((e, i) => {
+			list[i].description = arr[i];
+		});
+	}
 }
 
 function saveCardItem(item) {
@@ -706,7 +802,7 @@ function saveCardItem(item) {
 // UTILITY FUNCTIONS //
 
 function expandView(e) {
-	app.append(expandCard(todoArray[e], colors()));
+	app.append(expandCard(todoItemList[e], colors()));
 	expandCardEvents(e);
 }
 
@@ -743,7 +839,7 @@ function displaySearch(e) {
 	const searchTerm = e.target.value.toLowerCase();
 
 	const filtered = () =>
-		todoArray.filter((e) => {
+		todoItemList.filter((e) => {
 			return (
 				e.getTitle().toLowerCase().includes(searchTerm) ||
 				e.getDescription().toLowerCase().includes(searchTerm)
@@ -773,5 +869,3 @@ function getCurrentDate() {
 
 	return `${year}-${month}-${day}`;
 }
-
-openOverview(todoArray);

@@ -4,7 +4,7 @@
 	font-style: normal;
 }
 :root {
-	color-scheme: light dark;
+	/* color-scheme: light dark; */
 	--font-size-1: 1.8rem;
 }
 html {
@@ -37,6 +37,7 @@ li {
 }
 input,
 textarea {
+	display: flex;
 	font: inherit;
 	outline: none;
 	border: none;
@@ -49,6 +50,8 @@ input:focus,
 textarea:focus {
 	outline: none;
 	border: none;
+	background-color: inherit;
+	color: inherit;
 }
 img {
 	object-fit: cover;
@@ -69,6 +72,11 @@ img {
 	height: 2.3rem;
 	width: 2.3rem;
 	stroke-width: 1.8px;
+
+		display: flex;
+	align-items: center;
+	justify-content: center;
+
 }
 
 input[type="color"]::-webkit-color-swatch-wrapper {
@@ -84,6 +92,7 @@ input[type="color"]::-webkit-color-swatch {
 
 li,
 .btn,
+.menu-btn,
 .search-container label,
 .question,
 .user-name,
@@ -132,13 +141,12 @@ li,
 /* Drop Down */
 .dropdown-select {
 	position: relative;
-	font-size: 1.4rem;
 	display: flex;
+	gap: 10px;
 	justify-content: center;
 	align-items: center;
 	width: fit-content;
 	padding: 0.2rem 0.4rem;
-	outline: 2px solid var(--color-3);
 	border-radius: 0.5rem;
 	-webkit-border-radius: 0.5rem;
 	-moz-border-radius: 0.5rem;
@@ -146,24 +154,20 @@ li,
 	-o-border-radius: 0.5rem;
 }
 .dropdown-select:hover {
-	color: var(--color-6);
-	outline-width: 2px;
+	/* color: var(--color-6); */
 	cursor: pointer;
 }
 .dropdown-select span {
 	display: flex;
-	margin: 0 5px;
-	width: 15px;
+	width: 1.1em;
 	pointer-events: none;
 }
 .dropdown-select p {
 	pointer-events: none;
 }
 
-
-
 /* Drop Down Select */
-.dropdown > ul{
+.dropdown > ul {
 	display: none;
 	width: fit-content;
 	z-index: 10;
@@ -185,7 +189,8 @@ li,
 }
 .dropdown > ul > li {
 	white-space: nowrap;
-	padding: 0.2rem 0.4rem;
+	/* padding: 0.2rem 0.4rem; */
+	padding: 5px 10px;
 	border-radius: 0.5rem;
 	-webkit-border-radius: 0.5rem;
 	-moz-border-radius: 0.5rem;
@@ -195,7 +200,7 @@ li,
 }
 .dropdown > ul > li:hover {
 	color: var(--color-6);
-	background-color: rgba(var(--color-4-t), 0.08);
+	background-color: rgba(var(--color-3-t), 0.1);
 	outline-width: 2px;
 	cursor: pointer;
 	backdrop-filter: blur(4px);

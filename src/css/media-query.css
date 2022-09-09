@@ -1,0 +1,206 @@
+@media (min-width: 1px) and (max-width: 480px) {
+	:root {
+		/* color-scheme: light dark; */
+		--font-size-1: 1.8rem;
+	}
+	html {
+		font-size: 57.5%;
+		box-sizing: border-box;
+	}
+
+  .menu-btn.close{
+
+  }
+	.app {
+		display: block;
+		padding: 0 1rem;
+		min-height: 100%;
+	}
+
+
+	.main {
+		margin: 0;
+		padding: 0;
+	}
+
+  .search-container input {
+	width: 10rem;
+}
+  .search-container input:focus-within,
+  .search-container input:active {
+    position: absolute;
+    z-index: 10;
+    left: 95px;
+	width: auto;
+  background-color: #fff;
+
+}
+
+    .title-container,
+  .header{
+    padding-right: 1em;
+  }
+  .user-picture{
+    margin-left: 1em;
+  }
+
+	/* Card */
+	.list-card-container {
+		height: 97%;
+	}
+	.card-container {
+		height: 100%;
+	}
+	.card {
+		padding: 1rem 1rem;
+	}
+
+  .theme{
+    padding-left: 5px;
+    font-size: inherit;
+    margin-bottom: 1em;
+    gap: 1.2rem;
+  }
+  .theme .span-icon{
+    height: 1.4em;
+    width: 1.4em;
+  }
+  .theme svg{
+    height: 100%;
+    width: 100%;
+  }
+  .theme ul{
+    top: -370%;
+    left: 0;
+  }
+
+
+  .logo h1{
+    margin-right: auto;
+
+  }
+  .user-picture{
+    margin-right: 1rem;
+  }
+  .header{
+    align-items: center;
+  }
+}
+
+/* Tablet */
+@media (min-width: 480px) and (max-width: 780px) {
+  	:root {
+		/* color-scheme: light dark; */
+		--font-size-1: 1.8rem;
+	}
+	html {
+		font-size: 60.5%;
+		box-sizing: border-box;
+	}
+
+  .menu-btn.close{
+
+  }
+	.app {
+		display: block;
+		padding: 0 1rem;
+		height: 100%;
+	}
+
+
+	.main {
+		margin: 0;
+		padding: 0;
+	}
+
+    .search-container input {
+	width: 10rem;
+}
+  .search-container input:focus-within,
+  .search-container input:active {
+    position: absolute;
+    z-index: 10;
+    left: 95px;
+	width: auto;
+  background-color: #fff;
+
+}
+
+    .title-container,
+  .header{
+    padding: 0 1.1em;
+  }
+
+	/* Card */
+	.list-card-container {
+		height: 97%;
+	}
+	.card-container {
+		height: 100%;
+	}
+	.card {
+		padding: 1rem 1rem;
+	}
+
+
+  .logo h1{
+    margin-right: auto;
+
+  }
+  .user-picture{
+    margin-right: 1rem;
+  }
+
+}
+
+/* Laptop */
+@media (min-width: 780px) and (max-width: 1024px) {
+  	:root {
+		/* color-scheme: light dark; */
+		--font-size-1: 1.8rem;
+	}
+	html {
+		font-size: 60.5%;
+		box-sizing: border-box;
+	}
+
+  .menu-btn.close{
+
+  }
+	.app {
+		display: block;
+		padding: 0 2rem;
+    padding-top: 1rem;
+		height: 100%;
+	}
+
+	.main {
+		margin: 0;
+		padding: 0;
+	}
+  .title-container,
+  .header{
+    padding: 0 1.1em;
+  }
+
+	/* Card */
+	.list-card-container {
+		height: 97%;
+	}
+	.card-container {
+		height: 100%;
+	}
+	.card {
+		padding: 1.5rem 1.5rem;
+	}
+
+
+  .logo h1{
+    margin-right: auto;
+
+  }
+  /* .user-picture{
+    margin-right: 1rem;
+  } */
+
+}

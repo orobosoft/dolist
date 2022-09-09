@@ -19,9 +19,12 @@ import {
 	plusIcon,
 	plusCircleIcon,
 	dotsHorizontal,
+	dayIcon,
+	nightIcon,
+	dayAndNightIcon,
 } from "./icons";
 const body = document.querySelector("body");
-body.classList.add('light')
+// body.classList.add("dark");
 const app = document.createElement("div");
 app.className = "app";
 app.id = "app";
@@ -145,7 +148,7 @@ export function renderAside() {
 	extra.appendChild(extraMenu);
 
 	const settings = createList("Settings", settingsIcon);
-	extraMenu.appendChild(settings);
+	extraMenu.append(settings);
 
 	aside.append(logo, nav, extra);
 	return aside;
@@ -160,21 +163,67 @@ export function renderMain() {
 	const header = document.createElement("header");
 	header.classList = "header";
 
+	const menuButton = document.createElement("div");
+	menuButton.classList = "menu-btn";
+	const topBar = document.createElement("div");
+	topBar.classList = 'menu-btn-top'
+	const middleBar = document.createElement("div");
+	middleBar.classList = 'menu-btn-middle'
+	const bottomBar = document.createElement("div");
+	bottomBar.classList = "menu-btn-bottom";
+	menuButton.append(topBar, middleBar, bottomBar);
+	menuButton.style.display = 'none'
+
 	const searchContainer = document.createElement("div");
 	searchContainer.classList = "search-container flex";
 
 	const searchLabel = document.createElement("label");
-	searchLabel.setAttribute("for", "search");
+	searchLabel.setAttribute("for", "search-bar");
 	createSvgIcon(searchLabel, searchIcon);
 
 	const searchInput = document.createElement("input");
 	searchInput.setAttribute("type", "search");
 	searchInput.setAttribute("name", "search");
-	searchInput.setAttribute("id", "search");
+	searchInput.setAttribute("id", "search-bar");
 	searchInput.setAttribute("placeholder", "Search");
-	searchInput.id = "search-bar";
 
 	searchContainer.append(searchLabel, searchInput);
+
+	const theme = document.createElement("div");
+	theme.classList = "theme flex dropdown dropdown-select";
+
+	const themeIcon = document.createElement("div");
+	themeIcon.classList = "theme-icon";
+	createSvgIcon(themeIcon, dayIcon);
+
+	const themeText = document.createElement("p");
+	themeText.textContent = "Theme";
+
+	const themeOptions = document.createElement("ul");
+	const themeSystem = document.createElement("li");
+	themeSystem.classList = "flex theme-system";
+	createSvgIcon(themeSystem, dayAndNightIcon);
+	const themeSystemText = document.createElement("p");
+	themeSystemText.textContent = "System";
+	themeSystem.append(themeSystemText);
+
+	const themeDark = document.createElement("li");
+	themeDark.classList = "flex theme-dark";
+	createSvgIcon(themeDark, nightIcon);
+	const themeDarkText = document.createElement("p");
+	themeDarkText.textContent = "Dark";
+	themeDark.append(themeDarkText);
+
+	const themeLight = document.createElement("li");
+	themeLight.classList = "flex theme-light";
+	createSvgIcon(themeLight, dayIcon);
+	const themeLightText = document.createElement("p");
+	themeLightText.textContent = "Light";
+	themeLight.append(themeLightText);
+
+	themeOptions.append(themeSystem, themeLight, themeDark);
+
+	theme.append(themeIcon, themeText, themeOptions);
 
 	const question = document.createElement("div");
 	question.classList = "question";
@@ -197,11 +246,19 @@ export function renderMain() {
 	const userPicture = document.createElement("div");
 	userPicture.classList = "user-picture";
 	const image = new Image();
-	image.src = UserImage;
+	// image.src = UserImage;
 	image.alt = "User Image";
 	userPicture.appendChild(image);
 
-	header.append(searchContainer, question, notification, userName, userPicture);
+	header.append(
+		menuButton,
+		searchContainer,
+		theme,
+		question,
+		notification,
+		userName,
+		userPicture
+	);
 
 	// Main Section
 	const mainSection = document.createElement("section");
@@ -301,7 +358,7 @@ export function createTaskCard(obj, colors) {
 		} else if (i === 3) {
 			const p = document.createElement("span");
 			p.classList = "card__tag ellipsis";
-			createSvgIcon(p, dotsHorizontal)
+			createSvgIcon(p, dotsHorizontal);
 			cardExtrasTags.appendChild(p);
 		}
 	}
@@ -337,7 +394,7 @@ export function createTaskCard(obj, colors) {
 	cardExtrasProject.textContent = obj.getCategory();
 	const projectColor = document.createElement("div");
 	projectColor.classList = "card__project-color";
-	projectColor.style.backgroundColor = colors[obj.getCategory()] || "#6aa7b3";
+	projectColor.style.backgroundColor = colors[obj.getCategory()];
 
 	cardExtras.append(
 		cardExtrasTags,
@@ -368,7 +425,6 @@ function createTasksListContainer() {
 	const completedTasksList = document.createElement("div");
 	completedTasksList.classList = "completed-tasks-list flex";
 
-
 	const completedTasksListHeading = document.createElement("div");
 	completedTasksListHeading.classList = "list-heading flex";
 	const completedTasksListTitle = document.createElement("h3");
@@ -376,9 +432,9 @@ function createTasksListContainer() {
 	const completedTasksListCount = document.createElement("span");
 	completedTasksListCount.textContent = "0";
 
-	const icon = document.createElement('div');
-	icon.classList = 'completed-icon'
-	createSvgIcon(icon, arrowDownIcon)
+	const icon = document.createElement("div");
+	icon.classList = "completed-icon";
+	createSvgIcon(icon, arrowDownIcon);
 
 	completedTasksListHeading.append(
 		completedTasksListTitle,
@@ -386,11 +442,14 @@ function createTasksListContainer() {
 		icon
 	);
 
-	const completedTasks = document.createElement('div');
-	completedTasks.classList = 'completed-tasks tasks'
+	const completedTasks = document.createElement("div");
+	completedTasks.classList = "completed-tasks tasks";
 
+	const completedTasksWrapper = document.createElement("div");
+	completedTasksWrapper.classList = 'completed-tasks-wrapper'
+	completedTasksWrapper.appendChild(completedTasks)
 
-	completedTasksList.append(completedTasksListHeading, completedTasks);
+	completedTasksList.append(completedTasksListHeading, completedTasksWrapper);
 
 	cardContainer.append(uncompletedTasks, completedTasksList);
 	return listCardContainer;
@@ -627,6 +686,7 @@ function expandedCardCheckListItem(obj) {
 	const eCardTodoItemText = document.createElement("input");
 	eCardTodoItemText.setAttribute("maxlength", "40");
 	eCardTodoItemText.value = obj.description || "";
+	eCardTodoItemText.placeholder = "Add list item";
 	eCardTodoItemText.classList = "e-card__todo-text";
 	const eCardTodoItemDelete = document.createElement("div");
 	// Check list delete icon
@@ -646,3 +706,7 @@ const unCompletedList = document.querySelector(".uncompleted-tasks");
 const completedList = document.querySelector(".completed-tasks");
 
 export { expandCard, expandedCardCheckListItem };
+
+
+
+app.append(renderAside(), renderMain());

@@ -2,7 +2,14 @@ import category, { categories } from "./category";
 import tag, { tags } from "./tag";
 import todo, { todoItemList } from "./todo-items";
 import UserImage from "../img/user.jpg";
-import { autoTheme, openInbox, openOverview, openToday } from "./DOM-events";
+import {
+	autoTheme,
+	loopTags,
+	openInbox,
+	openOverview,
+	openToday,
+	showProjectList,
+} from "./DOM-events";
 
 const colors = [
 	{
@@ -208,9 +215,13 @@ function loadApp() {
 		let sData = JSON.parse(localStorage.getItem(app.active));
 		setData(sData);
 		openToday(todoItemList);
+		showProjectList(categories);
+		loopTags(tags);
 	} else {
 		firstLoad(app[app.active]);
 		openToday(todoItemList);
+		showProjectList(categories);
+		loopTags(tags);
 		updateLocalStorage();
 	}
 }
@@ -303,6 +314,8 @@ function storeData() {
 }
 
 loadApp();
-window.addEventListener('storage', () => {
+window.addEventListener("storage", () => {
 	openToday(todoItemList);
-})
+});
+
+console.log("data");

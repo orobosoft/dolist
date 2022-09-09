@@ -10,12 +10,7 @@ import {
 import { updateMediaQuery } from "./media-query";
 import tag, { tags } from "./tag";
 import todo, { todoItemList } from "./todo-items";
-import {
-	createTaskCard,
-	expandedCardCheckListItem,
-	expandCard,
-} from "./view";
-
+import { createTaskCard, expandedCardCheckListItem, expandCard } from "./view";
 
 // Colors
 let colors = getColors;
@@ -151,7 +146,7 @@ document.querySelector(".tag-okay-btn").addEventListener("click", addTag);
 export function openOverview(arr) {
 	title = "Overview";
 
-	clearAddedStyle(menu, "selected-menu");
+	clearAllAddedStyle();
 	collapseTagMenu();
 	collapseProjectMenu();
 	overview.classList.add("selected-menu");
@@ -171,7 +166,7 @@ export function openOverview(arr) {
 // Today Display
 export function openToday(arr) {
 	title = "Today";
-	clearAddedStyle(menu, "selected-menu");
+	clearAllAddedStyle();
 	collapseTagMenu();
 	collapseProjectMenu();
 	header.textContent = "Today";
@@ -198,7 +193,7 @@ export function openToday(arr) {
 // Inbox Display
 export function openInbox(arr) {
 	title = "Inbox";
-	clearAddedStyle(menu, "selected-menu");
+	clearAllAddedStyle();
 	collapseTagMenu();
 	collapseProjectMenu();
 	header.textContent = "Inbox";
@@ -226,11 +221,9 @@ function toggleProject(arr) {
 	const projectUl = document.querySelector(".project-ul");
 	const projectBtn = document.querySelector(".add-project-btn");
 	const projectUlCon = document.querySelector(".project-ul-container");
-	const ul = document.querySelector(".project-ul");
 	collapseTagMenu();
 
 	if (projectUlCon.style.display === "none") {
-		showProjectList(arr);
 		projectUlCon.style.display = "block";
 		projectBtn.style.marginTop =
 			projectUl.getBoundingClientRect().height + 10 + "px";
@@ -239,11 +232,10 @@ function toggleProject(arr) {
 	} else {
 		projectUlCon.style.display = "none";
 		projectList.style.marginBottom = "25px";
-		ul.replaceChildren();
 	}
 }
 
-function showProjectList(arr) {
+export function showProjectList(arr) {
 	const ul = document.querySelector(".project-ul");
 
 	for (let i = 0; i < arr.length; i++) {
@@ -265,10 +257,7 @@ function openProject() {
 	Array.from(document.querySelectorAll(".project-ul li")).forEach(
 		(element, index) => {
 			element.addEventListener("click", () => {
-				const projectMenu = document.querySelectorAll(".project-ul li");
-
-				clearAddedStyle(menu, "selected-menu");
-				clearAddedStyle(projectMenu, "selected-menu");
+				clearAllAddedStyle();
 
 				const name = categories[index].getCategoryName();
 				title = "Project: " + name;
@@ -317,7 +306,6 @@ function renderTags(arr) {
 	collapseProjectMenu();
 
 	if (tagUlCon.style.display === "none") {
-		loopTags(arr);
 		tagUlCon.style.display = "block";
 		tagBtn.style.marginTop = tagUl.getBoundingClientRect().height + 10 + "px";
 		tagList.style.marginBottom = "15px";
@@ -325,10 +313,9 @@ function renderTags(arr) {
 	} else {
 		tagUlCon.style.display = "none";
 		tagList.style.marginBottom = "25px";
-		tagUl.replaceChildren();
 	}
 }
-function loopTags(array) {
+export function loopTags(array) {
 	const tagUl = document.querySelector(".tag-ul");
 
 	for (let i = 0; i < array.length; i++) {
@@ -340,43 +327,43 @@ function loopTags(array) {
 }
 // Display the tag todo
 function openTag() {
-	const tagsElement = document.querySelectorAll(".tag-ul li");
-	Array.from(tagsElement).forEach((element, index) => {
-		element.addEventListener("click", (e) => {
-			clearAddedStyle(menu, "selected-menu");
-			clearAddedStyle(tagsElement, "tag-selected");
+	Array.from(document.querySelectorAll(".tag-ul li")).forEach(
+		(element, index) => {
+			element.addEventListener("click", (e) => {
+				clearAllAddedStyle();
 
-			const filtered = () => {
-				const filteredArr = [];
-				todoItemList.forEach((e, i) => {
-					const t = e.getTags();
-					for (let n = 0; n < t.length; n++) {
-						if (t[n] === name) {
-							filteredArr.push(e);
-							break;
+				const filtered = () => {
+					const filteredArr = [];
+					todoItemList.forEach((e, i) => {
+						const t = e.getTags();
+						for (let n = 0; n < t.length; n++) {
+							if (t[n] === name) {
+								filteredArr.push(e);
+								break;
+							}
 						}
-					}
-				});
-				return filteredArr;
-			};
+					});
+					return filteredArr;
+				};
 
-			const name = tags[index].getTagName();
-			title = "Tag: " + name;
-			header.textContent = title;
-			element.classList.add("tag-selected");
+				const name = tags[index].getTagName();
+				title = "Tag: " + name;
+				header.textContent = title;
+				element.classList.add("tag-selected");
 
-			const btn = function () {
-				todo().createTodoItem();
-				todoItemList[todoItemList.length - 1].addTag(name);
+				const btn = function () {
+					todo().createTodoItem();
+					todoItemList[todoItemList.length - 1].addTag(name);
 
-				expandView(todoItemList.length - 1);
-				addTodoEvent(todoItemList[todoItemList.length - 1]);
-			};
-			buttonFunction = btn;
-			currentArray = filtered;
-			displayTodo(filtered());
-		});
-	});
+					expandView(todoItemList.length - 1);
+					addTodoEvent(todoItemList[todoItemList.length - 1]);
+				};
+				buttonFunction = btn;
+				currentArray = filtered;
+				displayTodo(filtered());
+			});
+		}
+	);
 }
 
 // Add Tag Button
@@ -415,7 +402,7 @@ function displayTodo(array) {
 			completedList.append(card);
 			card.classList.add("completed");
 		}
-		updateLocalStorage()
+		updateLocalStorage();
 	}
 	// Update tasks count
 	document.querySelector(".list-heading span").textContent = count1;
@@ -811,13 +798,20 @@ function clearAddedStyle(array, className) {
 		element.classList.remove(className);
 	});
 }
+function clearAllAddedStyle() {
+	const projectMenu = document.querySelectorAll(".project-ul li");
+	const tagsElement = document.querySelectorAll(".tag-ul li");
+	clearAddedStyle(tagsElement, "tag-selected");
+	clearAddedStyle(projectMenu, "selected-menu");
+	clearAddedStyle(menu, "selected-menu");
+}
 
 function collapseProjectMenu() {
 	const projectUlCon = document.querySelector(".project-ul-container");
 	const ul = document.querySelector(".project-ul");
 	if (projectUlCon) {
 		projectUlCon.style.display = "none";
-		ul.replaceChildren();
+		// ul.replaceChildren();
 		projectList.style.marginBottom = "25px";
 	}
 }
@@ -827,7 +821,7 @@ function collapseTagMenu() {
 	const tagUlCon = document.querySelector(".tag-ul-container");
 	if (tagUlCon) {
 		tagUlCon.style.display = "none";
-		tagUl.replaceChildren();
+		// tagUl.replaceChildren();
 		tagList.style.marginBottom = "25px";
 	}
 }

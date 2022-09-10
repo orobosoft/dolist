@@ -128,43 +128,17 @@ function setData(data) {
 	// openInbox(newTodoItemList)
 }
 
-const { todoArray, categoryArray, tagArray } = generateData();
-const newDemo = {
-	name: "Demo",
-	picture: UserImage,
-	theme: "system",
-	color: "2",
-	tagArray: tagArray,
-	categoryArray: categoryArray,
-	todoArray: todoArray,
-};
-let demo = newDemo;
-
-const newUser = {
-	name: "User",
-	picture: UserImage,
-	theme: "system",
-	color: "2",
-	tagArray: [
-		tag().createTag("Home"),
-		tag().createTag("Art"),
-		tag().createTag("Love"),
-		tag().createTag("Personal"),
-	],
-	categoryArray: [
-		category().createCategory("doList", "red"),
-		category().createCategory("Development", "blue"),
-		category().createCategory("Office", "green"),
-		category().createCategory("Personal", "yellow"),
-	],
-	todoArray: [],
-};
-let user = newUser;
-
 function generateData() {
-	const tagArray = [];
-	const categoryArray = [];
-	const todoArray = [];
+	let newDemo = {
+		name: "Demo",
+		picture: UserImage,
+		theme: "system",
+		color: "1",
+	};
+
+	let tagArray = [];
+	let categoryArray = [];
+	let todoArray = [];
 
 	for (let i = 0; i < 10; i++) {
 		const newTag = tag().createTag(`Tag ${i + 1}`);
@@ -190,10 +164,37 @@ function generateData() {
 		}
 		todoArray.push(newTodo);
 	}
-	return { todoArray, categoryArray, tagArray };
+	newDemo.tagArray = tagArray;
+	newDemo.categoryArray = categoryArray;
+	newDemo.todoArray = todoArray;
+
+	return newDemo;
 }
 
-let app = { active: "demo", demo: demo, user: user };
+let demo = generateData();
+
+const newUser = {
+	name: "User",
+	picture: UserImage,
+	theme: "system",
+	color: "2",
+	tagArray: [
+		tag().createTag("Home"),
+		tag().createTag("Art"),
+		tag().createTag("Love"),
+		tag().createTag("Personal"),
+	],
+	categoryArray: [
+		category().createCategory("doList", "red"),
+		category().createCategory("Development", "blue"),
+		category().createCategory("Office", "green"),
+		category().createCategory("Personal", "yellow"),
+	],
+	todoArray: [],
+};
+let user = newUser;
+
+export let appData = { active: "demo", demo: demo, user: user };
 
 function firstLoad(data) {
 	let name = document.querySelector(".user-name p");
@@ -207,33 +208,36 @@ function firstLoad(data) {
 	todo().setTodoItemList(data.todoArray);
 	category().setCategories(data.categoryArray);
 	tag().setTags(data.tagArray);
+	console.log(tags);
+
+	localStorage.setItem("active", `${data.name.toLowerCase()}`);
+	localStorage.setItem(
+		`${data.name.toLowerCase()}`,
+		JSON.stringify(storeData())
+	);
 }
 
-function loadApp() {
+export function loadApp() {
 	// localStorage.clear()
-	if (localStorage.getItem(app.active)) {
-		let sData = JSON.parse(localStorage.getItem(app.active));
+	console.log("LS: " + localStorage.getItem("active"));
+	console.log("N: " + appData.active);
+	let data = localStorage.getItem(localStorage.getItem("active"));
+
+	if (data) {
+		let sData = JSON.parse(data);
 		setData(sData);
 		openToday(todoItemList);
 		showProjectList(categories);
 		loopTags(tags);
 	} else {
-		firstLoad(app[app.active]);
+		firstLoad(appData[appData.active]);
 		openToday(todoItemList);
 		showProjectList(categories);
 		loopTags(tags);
-		updateLocalStorage();
 	}
 }
-export function updateLocalStorage() {
-	let dataToSave = JSON.stringify(storeData());
-	let activeData = app.active;
 
-	localStorage.setItem("active", activeData);
-	localStorage.setItem(activeData, dataToSave);
-}
-
-function storeData() {
+export function storeData() {
 	let newData = {};
 	let newTags = [];
 	let newCategories = [];
@@ -313,7 +317,8 @@ function storeData() {
 	return newData;
 }
 
-loadApp();
+let acc = localStorage.getItem("active");
+loadApp(acc);
 window.addEventListener("storage", () => {
 	openToday(todoItemList);
 });

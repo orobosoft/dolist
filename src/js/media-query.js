@@ -212,6 +212,8 @@ function loadDesktopView() {
 }
 
 document.addEventListener("click", (e) => {
+
+	const app = document.querySelector("#app");
 	const aside = document.querySelector(".aside");
 	if (e.target.classList.contains("menu-btn")) {
 		app.appendChild(bgElement);

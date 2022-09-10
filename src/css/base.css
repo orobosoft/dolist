@@ -167,27 +167,41 @@ li,
 }
 
 /* Drop Down Select */
-.dropdown > ul {
-	display: none;
+.dropdown ul{
+	/* overflow: hidden; */
+}
+.dropdown  .list {
+	overflow: hidden;
 	width: fit-content;
 	z-index: 10;
+	height: 1px;
+	opacity: 0;
+	visibility: hidden;
 	flex-direction: column;
 	position: absolute;
 	top: 30px;
 	font-size: 1.5rem;
 	background-color: rgba(var(--bg-color-t), 0.5);
-	padding: 5px 5px;
-	box-shadow: rgba(var(--color-6-t), 0.5) 0px 0px 4px 0px,
-		rgba(var(--color-6-t), 0.1) 0px 0px 1px 0px;
-
+	padding: .5rem;
+	box-shadow: rgba(var(--color-6-t), 0.5) 0px 0px 4px 0px,		rgba(var(--color-6-t), 0.1) 0px 0px 1px 0px;
 	backdrop-filter: blur(4px);
 	border-radius: 1rem;
 	-webkit-border-radius: 1rem;
 	-moz-border-radius: 1rem;
 	-ms-border-radius: 1rem;
 	-o-border-radius: 1rem;
+	transition:	height 0.3s, opacity .15s;
+	-moz-transition:	height 0.3s, opacity .15s;
+	-ms-transition:	height 0.3s, opacity .15s;
+	-o-transition:	height 0.3s, opacity .15s;
+	-webkit-transition:	height 0.3s, opacity .15s;
+	transition-delay: 0.1s, 0.15s;
 }
-.dropdown > ul > li {
+.dropdown ul{
+	display: flex;
+	flex-direction: column;
+}
+.dropdown  ul > li {
 	white-space: nowrap;
 	/* padding: 0.2rem 0.4rem; */
 	padding: 5px 10px;
@@ -198,7 +212,7 @@ li,
 	-o-border-radius: 0.5rem;
 	color: var(--color-4);
 }
-.dropdown > ul > li:hover {
+.dropdown  ul > li:hover {
 	color: var(--color-6);
 	background-color: rgba(var(--color-3-t), 0.1);
 	outline-width: 2px;

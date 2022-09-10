@@ -31,7 +31,7 @@ app.id = "app";
 body.appendChild(app);
 
 // Aside Section
-export function renderAside() {
+function renderAside() {
 	const aside = document.createElement("aside");
 	aside.classList = "aside";
 
@@ -155,7 +155,7 @@ export function renderAside() {
 }
 
 // MAIN
-export function renderMain() {
+function renderMain() {
 	const main = document.createElement("main");
 	main.classList = "main";
 
@@ -166,13 +166,13 @@ export function renderMain() {
 	const menuButton = document.createElement("div");
 	menuButton.classList = "menu-btn";
 	const topBar = document.createElement("div");
-	topBar.classList = 'menu-btn-top'
+	topBar.classList = "menu-btn-top";
 	const middleBar = document.createElement("div");
-	middleBar.classList = 'menu-btn-middle'
+	middleBar.classList = "menu-btn-middle";
 	const bottomBar = document.createElement("div");
 	bottomBar.classList = "menu-btn-bottom";
 	menuButton.append(topBar, middleBar, bottomBar);
-	menuButton.style.display = 'none'
+	menuButton.style.display = "none";
 
 	const searchContainer = document.createElement("div");
 	searchContainer.classList = "search-container flex";
@@ -199,6 +199,9 @@ export function renderMain() {
 	const themeText = document.createElement("p");
 	themeText.textContent = "Theme";
 
+	const themeOptionsWrapper = document.createElement("div");
+	themeOptionsWrapper.classList = "list";
+
 	const themeOptions = document.createElement("ul");
 	const themeSystem = document.createElement("li");
 	themeSystem.classList = "flex theme-system";
@@ -222,8 +225,9 @@ export function renderMain() {
 	themeLight.append(themeLightText);
 
 	themeOptions.append(themeSystem, themeLight, themeDark);
+	themeOptionsWrapper.appendChild(themeOptions);
 
-	theme.append(themeIcon, themeText, themeOptions);
+	theme.append(themeIcon, themeText, themeOptionsWrapper);
 
 	const question = document.createElement("div");
 	question.classList = "question";
@@ -237,11 +241,38 @@ export function renderMain() {
 	// notification.appendChild(notificationDot)
 
 	const userName = document.createElement("div");
-	userName.classList = "user-name flex";
+	userName.classList = "user-name flex dropdown dropdown-select";
 	const userNameText = document.createElement("p");
 	userNameText.textContent = "Orobosa Ikpon";
 	userName.appendChild(userNameText);
 	createSvgIcon(userName, arrowDownIcon);
+
+	const usersOptionWrapper = document.createElement("div");
+	usersOptionWrapper.classList = "list";
+	const usersOption = document.createElement("ul");
+	// usersOption.classList = 'list-close'
+	const demo = document.createElement("li");
+	demo.classList = "flex users demo";
+	const demoText = document.createElement("p");
+	demoText.textContent = "Demo";
+	demo.append(demoText);
+
+	const user1 = document.createElement("li");
+	user1.classList = "flex users user";
+	const user1Text = document.createElement("p");
+	user1Text.textContent = "User";
+	user1.append(user1Text);
+
+	const user2 = document.createElement("li");
+	user2.classList = "flex users user1";
+	const user2Text = document.createElement("p");
+	user2Text.textContent = "User1";
+	user2.append(user2Text);
+
+	usersOption.append(demo, user2, user1);
+	usersOptionWrapper.appendChild(usersOption);
+
+	userName.append(usersOptionWrapper);
 
 	const userPicture = document.createElement("div");
 	userPicture.classList = "user-picture";
@@ -305,10 +336,9 @@ export function renderMain() {
 
 	return main;
 }
+app.append(renderAside(), renderMain());
 
-// app.append(renderAside(), renderMain());
-
-// Task Card
+// TASK CARD
 export function createTaskCard(obj, colors) {
 	const card = document.createElement("div");
 	card.classList = "card flex";
@@ -446,8 +476,8 @@ function createTasksListContainer() {
 	completedTasks.classList = "completed-tasks tasks";
 
 	const completedTasksWrapper = document.createElement("div");
-	completedTasksWrapper.classList = 'completed-tasks-wrapper'
-	completedTasksWrapper.appendChild(completedTasks)
+	completedTasksWrapper.classList = "completed-tasks-wrapper";
+	completedTasksWrapper.appendChild(completedTasks);
 
 	completedTasksList.append(completedTasksListHeading, completedTasksWrapper);
 
@@ -455,7 +485,8 @@ function createTasksListContainer() {
 	return listCardContainer;
 }
 
-function expandCard(expandCardObj, colors) {
+// EXPANDED CARD
+export function expandCard(expandCardObj, colors, catObj, tagObj) {
 	const blur = document.createElement("div");
 	blur.classList = "e-card-blur";
 
@@ -475,9 +506,31 @@ function expandCard(expandCardObj, colors) {
 	eCardTop.style.outlineColor =
 		`${colors[expandCardObj.getCategory()]}` || "#6aa7b3";
 
+	const eCardCategoryOpenWrapper = document.createElement("div");
+	eCardCategoryOpenWrapper.classList = "list";
+
 	const eCardCategoryOpen = document.createElement("ul");
 	eCardCategoryOpen.classList = "e-card__category-container";
-	eCardTop.appendChild(eCardCategoryOpen);
+
+	eCardCategoryOpenWrapper.appendChild(eCardCategoryOpen);
+
+	createCategoryLi(eCardCategoryOpen);
+	function createCategoryLi(ul) {
+		const li = document.createElement("li");
+		li.classList = "e-card__category-item";
+		li.textContent = "Inbox";
+		li.style.outlineColor = colors[li.textContent];
+		ul.appendChild(li);
+		catObj.forEach((e) => {
+			const li = document.createElement("li");
+			li.classList = "e-card__category-item";
+			li.textContent = e.getCategoryName();
+			li.style.outlineColor = colors[li.textContent];
+			ul.appendChild(li);
+		});
+	}
+
+	eCardTop.appendChild(eCardCategoryOpenWrapper);
 
 	const eCardClose = document.createElement("div");
 	eCardClose.classList = "e-card__close btn";
@@ -563,11 +616,25 @@ function expandCard(expandCardObj, colors) {
 	eCardTagBtn.classList = "tag-list-btn dropdown flex";
 	createSvgIcon(eCardTagBtn, plusCircleIcon);
 
-	const eCardTagOpen = document.createElement("ul");
-	eCardTagOpen.classList = "e-card__tag-container";
-	eCardTagBtn.appendChild(eCardTagOpen);
+	const eCardTagOpenWrapper = document.createElement("div");
+	eCardTagOpenWrapper.classList = "list";
+
+	eCardTagBtn.appendChild(eCardTagOpenWrapper);
 
 	eCardTag.append(eCardTagName, eCardTagValue, eCardTagBtn);
+
+	createTagLi(eCardTagOpenWrapper);
+	function createTagLi(element) {
+		const ul = document.createElement("ul");
+		ul.classList = "e-card__tag-container";
+		for (let i = 0; i < tagObj.length; i++) {
+			const item = tagObj[i].getTagName();
+			const li = document.createElement("li");
+			li.textContent = item;
+			ul.append(li);
+		}
+		element.appendChild(ul);
+	}
 
 	const eCardPriority = document.createElement("div");
 	eCardPriority.classList = "e-card__priority flex";
@@ -660,7 +727,7 @@ function expandCard(expandCardObj, colors) {
 	return blur;
 }
 // Expanded Card Checklist Item
-function expandedCardCheckListItem(obj) {
+export function expandedCardCheckListItem(obj) {
 	const eCardTodoItem = document.createElement("div");
 	eCardTodoItem.classList = "e-card__todo-item flex";
 	eCardTodoItem.setAttribute("data-pos", `${obj.uniqueId}`);
@@ -701,12 +768,29 @@ function expandedCardCheckListItem(obj) {
 	return eCardTodoItem;
 }
 
-const unCompletedList = document.querySelector(".uncompleted-tasks");
+// SETTINGS PAGE CONTAINER
+export function settingsPageContainer() {
+	const background = document.createElement("div");
+	background.classList = "settings-page-bg";
 
-const completedList = document.querySelector(".completed-tasks");
+	const header = document.createElement("div");
+	header.classList = "settings-header";
+	background.append(header);
 
-export { expandCard, expandedCardCheckListItem };
+	const logo = document.createElement("div");
+	logo.classList = "settings-header-logo";
+	const logoP = document.createElement("h1");
+	logoP.textContent = ".dolist";
+	logo.append(logoP);
 
+	const closeBtn = document.createElement("div");
+	closeBtn.classList = "settings-header-close";
+	const closeBtnIcon = "M6 18L18 6M6 6l12 12";
+	createSvgIcon(closeBtn, closeBtnIcon);
 
+	header.append(logo, closeBtn);
 
-app.append(renderAside(), renderMain());
+	return background;
+}
+
+// app.append(settingsPageContainer())

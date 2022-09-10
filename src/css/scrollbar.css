@@ -13,15 +13,25 @@
 }
 .card-container::-webkit-scrollbar-track,
 .e-card-bg::-webkit-scrollbar-track,
+.dropdown .list::-webkit-scrollbar-track,
 textarea::-webkit-scrollbar-track {
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
 .card-container::-webkit-scrollbar-thumb,
+.dropdown .list::-webkit-scrollbar-thumb,
 .e-card-bg::-webkit-scrollbar-thumb {
 	display: none;
 }
 .card-container:hover::-webkit-scrollbar-thumb,
+.dropdown .list:hover::-webkit-scrollbar-thumb,
 .e-card-bg:hover::-webkit-scrollbar-thumb {
 	display: block;
+}
+
+.dropdown .list::-webkit-scrollbar {
+	width: 2px;
+}
+.dropdown .list::-webkit-scrollbar {
+	width: 2px;
 }

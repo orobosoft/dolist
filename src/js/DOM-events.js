@@ -1,5 +1,5 @@
 import category, { categories } from "./category";
-import { updateLocalStorage } from "./data";
+import { appData, loadApp, storeData, updateLocalStorage } from "./data";
 import {
 	createSvgIcon,
 	dayAndNightIcon,
@@ -10,7 +10,12 @@ import {
 import { updateMediaQuery } from "./media-query";
 import tag, { tags } from "./tag";
 import todo, { todoItemList } from "./todo-items";
-import { createTaskCard, expandedCardCheckListItem, expandCard } from "./view";
+import {
+	createTaskCard,
+	expandedCardCheckListItem,
+	expandCard,
+	settingsPageContainer,
+} from "./view";
 
 // Colors
 let colors = getColors;
@@ -55,29 +60,149 @@ prefersDark.addEventListener("change", (e) => {
 });
 // load default theme
 systemTheme(prefersDark.matches);
+// update Storage
+function updateStorage() {
+	let data = JSON.stringify(storeData());
+	let active = localStorage.getItem("active");
 
+	localStorage.setItem(`${active}`, `${data}`);
+}
 // Event to load & select theme
 document.addEventListener("click", (e) => {
 	loadTheme(e);
 	selectTheme(e);
+
+	// Show Users
+	if (e.target.classList.contains("user-name")) {
+		loadUsers();
+	} else {
+		let users = document.querySelector(".user-name .list");
+		document
+			.querySelector(".user-name .span-icon")
+			.classList.remove("rotate90");
+		users.style.height = "0";
+		setTimeout(() => {
+			users.style.opacity = 0;
+			users.style.visibility = "hidden";
+		}, 300);
+	}
+	// Change Users
+	if (e.target.classList.contains("users")) {
+		let username = e.target.firstElementChild.textContent.toLowerCase();
+
+		console.log(username);
+
+		console.log(appData.active);
+		appData.active = username;
+		console.log(appData.active);
+		// updateStorage()
+
+		// Remove previous projects and tags
+		const ul = document.querySelector(".project-ul");
+		ul.replaceChildren();
+		const ul1 = document.querySelector(".tag-ul");
+		ul1.replaceChildren();
+
+		
+		localStorage.setItem("active", `${username}`);
+		loadApp();
+	}
+
+	// Expand User Picture
+	if (e.target.classList.contains("user-picture")) {
+		app.append(expandImage("user-picture"));
+		let blur = document.querySelector(".e-card-blur");
+		blur.addEventListener("click", (e) => {
+			if (
+				e.target.classList.contains("e-card-blur") ||
+				e.target.classList.contains("e-card__close")
+			) {
+				blur.remove();
+			}
+		});
+	}
 });
+// Image function
+function expandImage(e) {
+	const pic = document.querySelector(`.${e} img`);
+	const bg = document.createElement("div");
+	bg.classList = "e-card-blur";
+	const imgContainer = document.createElement("div");
+	imgContainer.classList = "expanded-image e-card-bg";
+	console.log(pic.src);
+	const image = new Image();
+	image.src = pic.src;
+	image.alt = "User Image";
+	imgContainer.appendChild(image);
+	bg.appendChild(imgContainer);
+
+	const eCardClose = document.createElement("div");
+	eCardClose.classList = "e-card__close btn";
+	const eCardCloseIcon = "M6 18L18 6M6 6l12 12";
+	createSvgIcon(eCardClose, eCardCloseIcon);
+	imgContainer.appendChild(eCardClose);
+	return bg;
+}
+// Users functions
+const loadUsers = (e) => {
+	let users = document.querySelector(".user-name .list");
+	let u = document.querySelector(".user-name ul");
+
+	document.querySelector(".user-name .span-icon").classList.toggle("rotate90");
+
+	if (users.clientHeight <= 10) {
+		users.style.height = "10.4rem";
+		users.style.opacity = 1;
+		users.style.visibility = "visible";
+		// Array.from(
+		// 	document.querySelectorAll(".user-name li").forEach((e) => {
+		// 		e.textContent;
+		// 	})
+		// );
+	} else {
+		users.style.height = "0";
+		setTimeout(() => {
+			users.style.opacity = 0;
+			users.style.visibility = "hidden";
+		}, 300);
+	}
+};
 
 // Theme functions
 const loadTheme = (e) => {
-	let theme = document.querySelector(".theme ul");
+	let theme = document.querySelector(".theme .list");
+
 	if (e.target.classList.contains("theme")) {
-		if (theme.style.display === "" || theme.style.display === "none") {
-			theme.style.display = "flex";
-		} else theme.style.display = "none";
-	} else theme.style.display = "none";
+		if (theme.clientHeight <= 10) {
+			theme.style.height = "11rem";
+			theme.style.opacity = 1;
+			theme.style.visibility = "visible";
+		} else {
+			theme.style.height = "0";
+			setTimeout(() => {
+				theme.style.opacity = 0;
+				theme.style.visibility = "hidden";
+			}, 300);
+		}
+	} else {
+		theme.style.height = "0";
+		setTimeout(() => {
+			theme.style.opacity = 0;
+			theme.style.visibility = "hidden";
+		}, 300);
+	}
 };
+
 const selectTheme = (e) => {
 	if (e.target.classList.contains("theme-dark")) {
 		darkTheme();
+		updateStorage();
 	} else if (e.target.classList.contains("theme-light")) {
 		lightTheme();
+		updateStorage();
 	} else if (e.target.classList.contains("theme-system")) {
 		systemTheme(prefersDark.matches);
+		updateStorage();
 	}
 };
 export function autoTheme(theme) {
@@ -135,6 +260,15 @@ tagList.addEventListener("click", () => {
 });
 searchBar.addEventListener("input", (e) => {
 	displaySearch(e);
+});
+settings.addEventListener("click", (e) => {
+	app.append(settingsPageContainer());
+	let set = document.querySelector(".settings-page-bg");
+	set.addEventListener("click", (e) => {
+		if (e.target.classList.contains("settings-header-close")) {
+			set.remove();
+		}
+	});
 });
 document
 	.querySelector(".project-okay-btn")
@@ -296,6 +430,7 @@ function addProject() {
 
 	showProjectList(categories);
 	openProject();
+	updateStorage();
 }
 
 // Tag Display
@@ -376,6 +511,7 @@ function addTag(params) {
 
 	loopTags(tags);
 	openTag();
+	updateStorage();
 }
 
 // Display TODO
@@ -402,7 +538,7 @@ function displayTodo(array) {
 			completedList.append(card);
 			card.classList.add("completed");
 		}
-		updateLocalStorage();
+		updateStorage();
 	}
 	// Update tasks count
 	document.querySelector(".list-heading span").textContent = count1;
@@ -452,16 +588,8 @@ document
 		document
 			.querySelector(".completed-icon .span-icon")
 			.classList.toggle("rotate90");
-
-		// if (c.style.display === "none" || c.style.display === "") {
-		// 	// c.style.display = "flex";
-		// 	d.style.height = 360+ "px";
-		// } else if (c.style.display === "flex") {
-		// 	// c.style.display = "none";
-		// 	d.style.height = 45+ 'px';
-		// }
 		if (d.clientHeight === 45) {
-			d.style.height = 45 + c.clientHeight + "px";
+			d.style.height = 55 + c.getBoundingClientRect().height + "px";
 		} else d.style.height = 45 + "px";
 	});
 
@@ -486,55 +614,50 @@ function addTodoEvent(e) {
 
 function toggleLoadCategory() {
 	const category = document.querySelector(".e-card__category");
-	const ul = document.querySelector(".e-card__category-container");
+	const cate = document.querySelector(".e-card__category .list");
 
 	document
 		.querySelector(".e-card__category .span-icon")
 		.classList.toggle("rotate90");
+	let u = document.querySelector(".e-card__category ul");
 
-	if (ul.style.display === "flex") {
+	if (cate.clientHeight <= 10) {
+		cate.style.height = `${
+			u.getBoundingClientRect().height + cate.clientHeight
+		}px`;
+		cate.style.opacity = 1;
+		cate.style.visibility = "visible";
+	} else {
+		cate.style.height = "0";
 		setTimeout(() => {
-			ul.style.display = "none";
-			ul.replaceChildren();
-		}, 150);
-	} else if (ul.style.display === "none" || ul.style.display === "") {
-		const li = document.createElement("li");
-		li.classList = "e-card__category-item";
-		li.textContent = "Inbox";
-		li.style.outlineColor = colors()[li.textContent];
-		ul.appendChild(li);
-		categories.forEach((e) => {
-			const li = document.createElement("li");
-			li.classList = "e-card__category-item";
-			li.textContent = e.getCategoryName();
-			li.style.outlineColor = colors()[li.textContent];
-			ul.appendChild(li);
-		});
-		setTimeout(() => {
-			ul.style.display = "flex";
-		}, 150);
+			cate.style.opacity = 0;
+			cate.style.visibility = "hidden";
+		}, 300);
 	}
 }
 
 function toggleLoadTags() {
 	const tag = document.querySelector(".tag-list-btn");
-	const ul = document.querySelector(".e-card__tag-container");
+	const cate = document.querySelector(".tag-list-btn .list");
 
-	if (ul.style.display === "flex") {
+	// document
+	// 	.querySelector(".tag-list-btn .span-icon")
+	// 	.classList.toggle("rotate90");
+
+	let u = document.querySelector(".tag-list-btn ul");
+
+	if (cate.clientHeight <= 10) {
+		cate.style.height = `${
+			u.getBoundingClientRect().height + cate.clientHeight
+		}px`;
+		cate.style.opacity = 1;
+		cate.style.visibility = "visible";
+	} else {
+		cate.style.height = "0";
 		setTimeout(() => {
-			ul.style.display = "none";
-			ul.replaceChildren();
-		}, 150);
-	} else if (ul.style.display === "none" || ul.style.display === "") {
-		tags.forEach((e) => {
-			const li = document.createElement("li");
-			li.classList = "tag-list-item";
-			li.textContent = e.getTagName();
-			ul.appendChild(li);
-		});
-		setTimeout(() => {
-			ul.style.display = "flex";
-		}, 150);
+			cate.style.opacity = 0;
+			cate.style.visibility = "hidden";
+		}, 300);
 	}
 }
 
@@ -546,20 +669,22 @@ function expandCardEvents(a) {
 	const oldTodoChecklists = JSON.parse(JSON.stringify(todo.getCheckLists()));
 	const oldTodoTags = JSON.parse(JSON.stringify(todo.getTags()));
 
-	const ul = document.querySelector(".e-card__category-container");
-	const ul2 = document.querySelector(".e-card__tag-container");
+	const ul = document.querySelector(".e-card__category .list");
+	const ul2 = document.querySelector(".tag-list-btn .list");
 	const spanIcon = document.querySelector(".e-card__category .span-icon");
 
+	// EVENTS
 	eCard.addEventListener("click", function (e) {
 		// CATEGORY
 		// Show Categories
 		if (e.target.classList.contains("e-card__category")) {
 			toggleLoadCategory();
 		} else if (!e.target.classList.contains("e-card__category")) {
+			ul.style.height = "0";
 			setTimeout(() => {
-				ul.style.display = "none";
-				ul.replaceChildren();
-			}, 150);
+				ul.style.opacity = 0;
+				ul.style.visibility = "hidden";
+			}, 300);
 
 			spanIcon.classList.remove("rotate90");
 		}
@@ -570,8 +695,6 @@ function expandCardEvents(a) {
 
 			category.style.outlineColor = colors()[e.target.textContent];
 			categoryText.textContent = e.target.textContent + "";
-			ul.style.display = "none";
-			ul.replaceChildren();
 		}
 
 		// EXIT E-CARD
@@ -607,9 +730,13 @@ function expandCardEvents(a) {
 		if (e.target.classList.contains("tag-list-btn")) {
 			toggleLoadTags();
 		} else if (!e.target.classList.contains("tag-list-btn")) {
-			ul2.style.display = "none";
-			ul2.replaceChildren();
+			ul2.style.height = "0";
+			setTimeout(() => {
+				ul2.style.opacity = 0;
+				ul2.style.visibility = "hidden";
+			}, 300);
 		}
+
 		// Select Tag
 		if (e.target.classList.contains("tag-list-item")) {
 			const tags = document.querySelector(".e-card__tag-value");
@@ -629,8 +756,11 @@ function expandCardEvents(a) {
 					tags.appendChild(p);
 				}
 			});
-			ul2.style.display = "none";
-			ul2.replaceChildren();
+			ul2.style.height = "0";
+			setTimeout(() => {
+				ul2.style.opacity = 0;
+				ul2.style.visibility = "hidden";
+			}, 300);
 		}
 
 		// // Delete checklist item
@@ -789,7 +919,7 @@ function saveCardItem(item) {
 // UTILITY FUNCTIONS //
 
 function expandView(e) {
-	app.append(expandCard(todoItemList[e], colors()));
+	app.append(expandCard(todoItemList[e], colors(), categories, tags));
 	expandCardEvents(e);
 }
 

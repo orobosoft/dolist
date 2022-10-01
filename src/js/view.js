@@ -774,21 +774,128 @@ export function settingsPageContainer() {
 	background.classList = "settings-page-bg";
 
 	const header = document.createElement("div");
-	header.classList = "settings-header";
-	background.append(header);
+	header.classList = "settings__header";
 
 	const logo = document.createElement("div");
-	logo.classList = "settings-header-logo";
+	logo.classList = "settings__header-logo";
 	const logoP = document.createElement("h1");
-	logoP.textContent = ".dolist";
+	logoP.textContent = "Settings";
 	logo.append(logoP);
 
 	const closeBtn = document.createElement("div");
-	closeBtn.classList = "settings-header-close";
+	closeBtn.classList = "settings__header-close";
 	const closeBtnIcon = "M6 18L18 6M6 6l12 12";
 	createSvgIcon(closeBtn, closeBtnIcon);
 
 	header.append(logo, closeBtn);
+
+	const body = document.createElement("div");
+	body.classList = "settings__body";
+
+	// Upper Section
+	// Side 1
+	const picAndName = document.createElement("div");
+	picAndName.classList = "settings__user-info";
+
+	const pic = document.createElement("div");
+	pic.classList = "settings__picture";
+
+	const picImage = new Image();
+	picImage.src = "http://localhost:5500/dist/344253d794154cde1033.jpg";
+	pic.append(picImage);
+
+	const name = document.createElement("div");
+	name.classList = "settings__name";
+	const nameText = document.createElement("h1");
+	nameText.textContent = "Orobosa Ikponmwosa";
+
+	// Edit buttons
+	const editButtons = document.createElement("div");
+
+	const pictureEdit = document.createElement("div");
+	pictureEdit.classList = "settings__picture-edit btn";
+	createSvgIcon(pictureEdit, editIcon);
+	const pictureEditText = document.createElement("p");
+	pictureEditText.textContent = "Picture";
+	pictureEdit.append(pictureEditText);
+
+	const nameEdit = document.createElement("div");
+	nameEdit.classList = "settings__name-edit btn";
+	createSvgIcon(nameEdit, editIcon);
+	const nameEditText = document.createElement("p");
+	nameEditText.textContent = "Name";
+	nameEdit.append(nameEditText);
+
+	editButtons.append(pictureEdit, nameEdit);
+
+	name.append(nameText, editButtons);
+	picAndName.append(pic, name);
+
+	// Side 2
+	const colorSelect = document.createElement("div");
+	colorSelect.classList = "settings__color-select";
+
+	const colorHeader = document.createElement("h3");
+	colorHeader.textContent = 'Accent Color'
+
+	const color1 = document.createElement("div");
+	color1.classList = "color-select__color-1";
+	const color1Display = document.createElement("div");
+	const color1Text = document.createElement("p");
+	color1.append(color1Display, color1Text);
+
+	const color2 = document.createElement("div");
+	color2.classList = "color-select__color-2";
+	const color2Display = document.createElement("div");
+	const color2Text = document.createElement("p");
+	color2.append(color2Display, color2Text);
+
+	const color3 = document.createElement("div");
+	color3.classList = "color-select__color-3";
+	const color3Display = document.createElement("div");
+	const color3Text = document.createElement("p");
+	color3.append(color3Display, color3Text);
+
+	const color4 = document.createElement("div");
+	color4.classList = "color-select__color-4";
+	const color4Display = document.createElement("div");
+	const color4Text = document.createElement("p");
+	color4.append(color4Display, color4Text);
+
+	const color5 = document.createElement("div");
+	color5.classList = "color-select__color-5";
+	const color5Display = document.createElement("div");
+	const color5Text = document.createElement("p");
+	color5.append(color5Display, color5Text);
+
+	const colorWrapper = document.createElement("div");
+	colorWrapper.append(color1, color2, color3, color4, color5);
+
+	colorSelect.append(colorHeader, colorWrapper);
+
+	const cont1 = document.createElement("div");
+	cont1.classList = "settings-upper-page";
+	cont1.append(picAndName, colorSelect);
+
+
+	// Lower Section
+	const project = document.createElement('div');
+	project.classList = 'settings__project'
+	const tag = document.createElement('div');
+	tag.classList = "settings__tag";
+	const task = document.createElement('div');
+	task.classList = "settings__task";
+
+
+
+
+	const cont2 = document.createElement("div");
+	cont2.classList = 'settings-lower-page'
+	cont2.append(project, tag, task)
+
+	body.append(cont1, cont2);
+
+	background.append(header, body);
 
 	return background;
 }

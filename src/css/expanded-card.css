@@ -151,6 +151,10 @@
 	outline: 2px solid var(--color-3);
 	font-size: 1.4rem;
 }
+.e-card__category div{
+	margin-top: 2px;
+	left: -2px;
+}
 .e-card__category:hover {
 	outline-width: 2px;
 }

@@ -103,7 +103,7 @@ document.addEventListener("click", (e) => {
 		const ul1 = document.querySelector(".tag-ul");
 		ul1.replaceChildren();
 
-		
+
 		localStorage.setItem("active", `${username}`);
 		loadApp();
 	}
@@ -265,7 +265,7 @@ settings.addEventListener("click", (e) => {
 	app.append(settingsPageContainer());
 	let set = document.querySelector(".settings-page-bg");
 	set.addEventListener("click", (e) => {
-		if (e.target.classList.contains("settings-header-close")) {
+		if (e.target.classList.contains("settings__header-close")) {
 			set.remove();
 		}
 	});

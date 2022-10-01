@@ -177,7 +177,7 @@ const newUser = {
 	name: "User",
 	picture: UserImage,
 	theme: "system",
-	color: "2",
+	color: "3",
 	tagArray: [
 		tag().createTag("Home"),
 		tag().createTag("Art"),
@@ -322,5 +322,3 @@ loadApp(acc);
 window.addEventListener("storage", () => {
 	openToday(todoItemList);
 });
-
-console.log("data");

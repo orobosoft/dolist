@@ -4,7 +4,7 @@ import { renderAside, renderMain } from "./view";
 
 // Mobile
 const bgElement = document.createElement("div");
-bgElement.classList = "empty-bg";
+bgElement.classList = "empty-bg fade-in";
 
 const isMobile = window.matchMedia("(min-width: 1px) and (max-width: 480px)");
 // Tablet
@@ -218,11 +218,20 @@ document.addEventListener("click", (e) => {
 	if (e.target.classList.contains("menu-btn")) {
 		app.appendChild(bgElement);
 		bgElement.style.display = "block";
+		// bgElement.classList.add('fade-in')
 
 		aside.classList = "aside aside-pop slide-in";
 		aside.style.display = "flex";
-	} else if (e.target.classList.contains("empty-bg")) {
+	}
+	if (e.target.classList.contains("empty-bg")) {
 		aside.classList = "aside aside-pop slide-out";
+		// let ddd = document.querySelector('.empty-bg');
+		// bgElement.classList.remove('fade-in')
+		// bgElement.classList.remove('fade-in')
+		// ddd.classList.remove('fade-in')
+		// ddd.classList.add('fade-out')
+
+
 		setTimeout(() => {
 			aside.style.display = "none";
 		}, 550);

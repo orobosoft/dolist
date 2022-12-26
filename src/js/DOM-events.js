@@ -15,6 +15,7 @@ import {
 	expandedCardCheckListItem,
 	expandCard,
 	settingsPageContainer,
+	loadProjectList,
 } from "./view";
 
 // Colors
@@ -103,7 +104,6 @@ document.addEventListener("click", (e) => {
 		const ul1 = document.querySelector(".tag-ul");
 		ul1.replaceChildren();
 
-
 		localStorage.setItem("active", `${username}`);
 		loadApp();
 	}
@@ -117,18 +117,42 @@ document.addEventListener("click", (e) => {
 				e.target.classList.contains("e-card-blur") ||
 				e.target.classList.contains("e-card__close")
 			) {
-				blur.remove();
+				blur.classList.add("fade-out");
+				let pic = document.querySelector(".e-card-blur > div");
+				pic.classList.add("pop-close");
+				setTimeout(() => {
+					blur.remove();
+				}, 550);
 			}
 		});
+	}
+
+	// SETTINGS PAGE
+	// Delete project
+	if (e.target.classList.contains("project-item-delete")) {
+		let catName =
+			e.target.parentElement.parentElement.firstChild.firstChild.textContent;
+
+		category().deleteCategory(catName, false);
+		openToday(todoItemList)
+		showProjectList(categories)
+		loopTags(tags)
+		updateStorage()
+
+
+		const projectList = document.querySelector(".settings__project-list");
+		projectList.replaceChildren(
+			loadProjectList(colors(), categories, todoItemList)
+		);
 	}
 });
 // Image function
 function expandImage(e) {
 	const pic = document.querySelector(`.${e} img`);
 	const bg = document.createElement("div");
-	bg.classList = "e-card-blur";
+	bg.classList = "e-card-blur fade-in";
 	const imgContainer = document.createElement("div");
-	imgContainer.classList = "expanded-image e-card-bg";
+	imgContainer.classList = "expanded-image e-card-bg pop-open";
 	console.log(pic.src);
 	const image = new Image();
 	image.src = pic.src;
@@ -262,7 +286,8 @@ searchBar.addEventListener("input", (e) => {
 	displaySearch(e);
 });
 settings.addEventListener("click", (e) => {
-	app.append(settingsPageContainer());
+	app.append(settingsPageContainer(colors(), categories, tags, todoItemList));
+
 	let set = document.querySelector(".settings-page-bg");
 	set.addEventListener("click", (e) => {
 		if (e.target.classList.contains("settings__header-close")) {
@@ -371,6 +396,7 @@ function toggleProject(arr) {
 
 export function showProjectList(arr) {
 	const ul = document.querySelector(".project-ul");
+	ul.replaceChildren()
 
 	for (let i = 0; i < arr.length; i++) {
 		const e = arr[i];
@@ -426,7 +452,7 @@ function addProject() {
 	let color = document.querySelector(".add-project-btn .color-selector").value;
 
 	category().createCategory(name, color);
-	ul.replaceChildren();
+	// ul.replaceChildren();
 
 	showProjectList(categories);
 	openProject();
@@ -452,6 +478,7 @@ function renderTags(arr) {
 }
 export function loopTags(array) {
 	const tagUl = document.querySelector(".tag-ul");
+	tagUl.replaceChildren()
 
 	for (let i = 0; i < array.length; i++) {
 		const item = array[i].getTagName();
@@ -507,7 +534,7 @@ function addTag(params) {
 	let name = document.querySelector(".add-tag-btn .add-input").value;
 
 	tag().createTag(name);
-	ul.replaceChildren();
+	// ul.replaceChildren();
 
 	loopTags(tags);
 	openTag();
@@ -699,12 +726,24 @@ function expandCardEvents(a) {
 
 		// EXIT E-CARD
 		if (e.target.classList.contains("e-card__cancel")) {
-			card.remove();
+			// card.classList.remove("pop-open");
+			eCard.classList.add("pop-close");
+			card.classList.add("fade-out");
+			setTimeout(() => {
+				card.remove();
+			}, 550);
+
 			todo.setCheckLists(oldTodoChecklists);
 			todo.setTags(oldTodoTags);
 		}
 		if (e.target.classList.contains("e-card__close")) {
-			card.remove();
+			// card.classList.remove("pop-open");
+			eCard.classList.add("pop-close");
+			card.classList.add("fade-out");
+
+			setTimeout(() => {
+				card.remove();
+			}, 550);
 			todo.setCheckLists(oldTodoChecklists);
 			todo.setTags(oldTodoTags);
 		}
@@ -716,7 +755,12 @@ function expandCardEvents(a) {
 			} else {
 				displayTodo(currentArray());
 			}
-			card.remove();
+			// card.classList.remove("pop-open");
+			eCard.classList.add("pop-close");
+			card.classList.add("fade-out");
+			setTimeout(() => {
+				card.remove();
+			}, 550);
 		}
 		// DELETE todo
 		if (e.target.classList.contains("e-card__delete")) {
@@ -762,28 +806,6 @@ function expandCardEvents(a) {
 				ul2.style.visibility = "hidden";
 			}, 300);
 		}
-
-		// // Delete checklist item
-		// if (e.target.classList.contains("e-card__todo-delete")) {
-		// 	const list = todo.getCheckLists();
-		// 	for (let i = 0; i < list.length; i++) {
-		// 		if (parentId === list[i].uniqueId) {
-		// 			list.splice(i, 1);
-		// 			cardList.replaceChildren();
-		// 			list.forEach((e) => {
-		// 				cardList.appendChild(expandedCardCheckListItem(e));
-		// 			});
-		// 		}
-		// 	}
-		// }
-		// // Add checklist item
-		// if (e.target.classList.contains("e-card__todo-add")) {
-		// 	// todo.addCheckList();
-		// 	cardList.replaceChildren();
-		// 	list.forEach((e) => {
-		// 		cardList.appendChild(expandedCardCheckListItem(e));
-		// 	});
-		// }
 
 		// CHECKLIST
 
@@ -913,7 +935,7 @@ function saveCardItem(item) {
 	item.setCategory(project);
 	item.setStatus(stats);
 	item.setTags(tag);
-	// item.setCheckLists(checkList);
+	if (checkList.length > 0) item.setCheckLists(checkList);
 }
 
 // UTILITY FUNCTIONS //
@@ -993,3 +1015,18 @@ function getCurrentDate() {
 
 	return `${year}-${month}-${day}`;
 }
+
+// PROJECTS
+function deleteProject() {}
+function moveProject() {}
+function changeProjectName() {}
+function changeProjectColor() {}
+
+// TAGS
+function deleteTag() {}
+function moveTag() {}
+function changeTagName() {}
+
+// POP UP
+function confirmationBox() {}
+function editBox() {}

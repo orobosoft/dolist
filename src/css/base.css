@@ -219,3 +219,10 @@ li,
 	cursor: pointer;
 	backdrop-filter: blur(4px);
 }
+
+
+.pop-up{
+	width: 20rem;
+	height: auto;
+	height: 20rem;
+}

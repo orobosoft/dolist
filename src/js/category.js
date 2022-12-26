@@ -1,7 +1,8 @@
-import Todo from "./todo-items.js";
+import { storeData } from "./data.js";
+import Todo, { todoItemList } from "./todo-items.js";
 
 // Get todo-items list
-const arr = Todo().getTodoItemList();
+const arr = todoItemList;
 
 // Category list factory
 const CategoryItem = (name, color) => {
@@ -50,13 +51,13 @@ const CategoryItem = (name, color) => {
 
 // Loop through todo-items list and change category name
 const updateCategory = (oldCat, newCat) => {
-	arr.forEach((li) => {
-		if (li.category === oldCat) {
-			li.category = newCat;
+	todoItemList.forEach((li) => {
+		if (li.getCategory() === oldCat) {
+			li.setCategory(newCat);
 		}
 	});
 	// push the updated array to the default array
-	Todo().setTodoItemList(arr);
+	// Todo().setTodoItemList(arr);
 };
 
 export let categories = [];
@@ -74,31 +75,35 @@ export default function category() {
 		return newCategory;
 	};
 
-	const deleteCategory = (categoryName, deleteEverything = false) => {
+	const deleteCategory = (categoryName, deleteEverything) => {
+		console.log('inside here now');
+		console.log(todoItemList);
+		console.log(arr);
 		if (deleteEverything) {
 			// delete both the list and all items in the category
 			// delete category from categories list
 			for (let i = categories.length - 1; i >= 0; i--) {
-				if (categories[i].categoryName === categoryName) {
+				if (categories[i].getCategoryName() === categoryName) {
 					categories.splice(i, 1);
 				}
 			}
 			// delete todo-items in the category
-			for (let i = arr.length - 1; i >= 0; i--) {
-				if (arr[i].category === categoryName) {
-					arr.splice(i, 1);
+			for (let i = todoItemList.length - 1; i >= 0; i--) {
+				if (todoItemList[i].getCategory() === categoryName) {
+					todoItemList.splice(i, 1);
 				}
 				// push the updated array to the default array
-				Todo().setTodoItemList(arr);
+				// Todo().setTodoItemList(arr);
 			}
 		} else {
 			// delete the list and change items to the default category
 			for (let i = categories.length - 1; i >= 0; i--) {
-				if (categories[i].categoryName === categoryName) {
+				if (categories[i].getCategoryName() === categoryName) {
 					categories.splice(i, 1);
 				}
 			}
 			updateCategory(categoryName, 'Inbox');
+			// storeData()
 		}
 	};
 

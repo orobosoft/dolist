@@ -18,11 +18,13 @@ textarea::-webkit-scrollbar-track {
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
+.settings__body::-webkit-scrollbar-thumb,
 .card-container::-webkit-scrollbar-thumb,
 .dropdown .list::-webkit-scrollbar-thumb,
 .e-card-bg::-webkit-scrollbar-thumb {
 	display: none;
 }
+.settings__body:hover::-webkit-scrollbar-thumb,
 .card-container:hover::-webkit-scrollbar-thumb,
 .dropdown .list:hover::-webkit-scrollbar-thumb,
 .e-card-bg:hover::-webkit-scrollbar-thumb {

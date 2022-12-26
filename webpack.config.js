@@ -41,9 +41,13 @@ module.exports = {
 		minimizer: [new CssMinimizerPlugin(), new TerserPlugin()],
 	},
 	plugins: [
-		new HtmlWebpackPlugin({ template: "./src/index.html", title: "DoList" }),
+		new HtmlWebpackPlugin({title: "DoList" }),
 		new MiniCssExtractPlugin({ filename: "[name].css" }),
 	],
+	// plugins: [
+	// 	new HtmlWebpackPlugin({ template: "./src/index.html", title: "DoList" }),
+	// 	new MiniCssExtractPlugin({ filename: "[name].css" }),
+	// ],
 	performance: {
 		hints: process.env.NODE_ENV === "production" ? "warning" : false,
 	},

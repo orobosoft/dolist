@@ -22,6 +22,8 @@ import {
 	dayIcon,
 	nightIcon,
 	dayAndNightIcon,
+	forwardIcon,
+	swatchIcon,
 } from "./icons";
 const body = document.querySelector("body");
 // body.classList.add("dark");
@@ -488,10 +490,10 @@ function createTasksListContainer() {
 // EXPANDED CARD
 export function expandCard(expandCardObj, colors, catObj, tagObj) {
 	const blur = document.createElement("div");
-	blur.classList = "e-card-blur";
+	blur.classList = "e-card-blur fade-in";
 
 	const background = document.createElement("div");
-	background.classList = "e-card-bg";
+	background.classList = "e-card-bg pop-open";
 
 	blur.appendChild(background);
 
@@ -686,7 +688,7 @@ export function expandCard(expandCardObj, colors, catObj, tagObj) {
 
 	// let objCheckList = expandCardObj.checkLists;
 	// Call check list items
-	console.log(expandCardObj.getCheckLists());
+	// console.log(expandCardObj.getCheckLists());
 	renderCheckList(expandCardObj.getCheckLists());
 	function renderCheckList(obj) {
 		for (let i = obj.length - 1; i >= 0; i--) {
@@ -769,7 +771,7 @@ export function expandedCardCheckListItem(obj) {
 }
 
 // SETTINGS PAGE CONTAINER
-export function settingsPageContainer() {
+export function settingsPageContainer(colors, categories, tags, todoList) {
 	const background = document.createElement("div");
 	background.classList = "settings-page-bg";
 
@@ -836,7 +838,7 @@ export function settingsPageContainer() {
 	colorSelect.classList = "settings__color-select";
 
 	const colorHeader = document.createElement("h3");
-	colorHeader.textContent = 'Accent Color'
+	colorHeader.textContent = "Accent Color";
 
 	const color1 = document.createElement("div");
 	color1.classList = "color-select__color-1";
@@ -877,21 +879,43 @@ export function settingsPageContainer() {
 	cont1.classList = "settings-upper-page";
 	cont1.append(picAndName, colorSelect);
 
-
 	// Lower Section
-	const project = document.createElement('div');
-	project.classList = 'settings__project'
-	const tag = document.createElement('div');
+	const project = document.createElement("div");
+	project.classList = "settings__project";
+
+	const projectTitle = document.createElement("h2");
+	projectTitle.textContent = "Projects";
+
+	const projectList = document.createElement("div");
+	projectList.classList = "settings__project-list";
+
+	//
+	// projectList.append(loadProjectList());
+	projectList.append(loadProjectList(colors, categories, todoList));
+
+	project.append(projectTitle, projectList);
+
+	const tag = document.createElement("div");
 	tag.classList = "settings__tag";
-	const task = document.createElement('div');
-	task.classList = "settings__task";
 
+	const tagTitle = document.createElement("h2");
+	tagTitle.textContent = "Tags";
 
+	const tagList = document.createElement("div");
+	tagList.classList = "settings__tag-list";
 
+	const tagItem = document.createElement("div");
+	tagItem.classList = "settings__tag-item";
+
+	tag.append(tagTitle, tagList);
+
+	//
+	//
+	tagList.append(loadTagList(tags, todoList));
 
 	const cont2 = document.createElement("div");
-	cont2.classList = 'settings-lower-page'
-	cont2.append(project, tag, task)
+	cont2.classList = "settings-lower-page";
+	cont2.append(project, tag);
 
 	body.append(cont1, cont2);
 
@@ -901,3 +925,311 @@ export function settingsPageContainer() {
 }
 
 // app.append(settingsPageContainer())
+
+export function loadProjectList(colors, categories, todo) {
+	// SETTINGS PROJECT ITEM
+
+	let projectItems = document.createElement("div");
+
+	const defaultCategory = (colors, todo) => {
+		const projectItem = document.createElement("div");
+		projectItem.classList = "project-item";
+		projectItem.style.outlineColor = colors["Inbox"];
+
+		let name = "Inbox";
+		let color = colors["Inbox"];
+
+		let allCount = 0;
+		let completedCount = 0;
+		let pendingCount = 0;
+		todo.forEach((item) => {
+			if (item.getCategory() === name) {
+				allCount++;
+				if (item.getStatus() === false) {
+					completedCount++;
+				} else {
+					pendingCount++;
+				}
+			}
+		});
+
+		// Project Info
+		const projectItemInfo = document.createElement("div");
+		projectItemInfo.classList = "project-item-info";
+
+		const projectItemInfoName = document.createElement("p");
+		projectItemInfoName.textContent = name;
+		projectItemInfoName.classList = "project-item-info-name";
+		const projectItemInfoStats = document.createElement("div");
+		projectItemInfoStats.classList = "project-item-info-stats";
+
+		const projectItemInfoStats1 = document.createElement("div");
+		const projectItemInfoStats1Name = document.createElement("p");
+		projectItemInfoStats1Name.textContent = "All";
+		const projectItemInfoStats1Number = document.createElement("span");
+		projectItemInfoStats1Number.textContent = allCount;
+
+		projectItemInfoStats1.append(
+			projectItemInfoStats1Name,
+			projectItemInfoStats1Number
+		);
+
+		const projectItemInfoStats2 = document.createElement("div");
+		const projectItemInfoStats2Name = document.createElement("p");
+		projectItemInfoStats2Name.textContent = "Completed";
+		const projectItemInfoStats2Number = document.createElement("span");
+
+		projectItemInfoStats2Number.textContent = completedCount;
+
+		projectItemInfoStats2.append(
+			projectItemInfoStats2Name,
+			projectItemInfoStats2Number
+		);
+
+		const projectItemInfoStats3 = document.createElement("div");
+		const projectItemInfoStats3Name = document.createElement("p");
+		projectItemInfoStats3Name.textContent = "Pending";
+		const projectItemInfoStats3Number = document.createElement("span");
+
+		projectItemInfoStats3Number.textContent = pendingCount;
+
+		projectItemInfoStats3.append(
+			projectItemInfoStats3Name,
+			projectItemInfoStats3Number
+		);
+
+		// Project Actions
+		const projectItemAction = document.createElement("div");
+		projectItemAction.classList = "project-item-action";
+
+		const projectItemMove = document.createElement("div");
+		createSvgIcon(projectItemMove, forwardIcon);
+		projectItemMove.classList = "project-item-move btn";
+
+		const projectItemDelete = document.createElement("div");
+		createSvgIcon(projectItemDelete, deleteIcon);
+		projectItemDelete.classList = "project-item-delete btn";
+
+		projectItemAction.append(projectItemMove, projectItemDelete);
+
+		// Append
+
+		projectItemInfoStats.append(
+			projectItemInfoStats1,
+			projectItemInfoStats2,
+			projectItemInfoStats3
+		);
+		projectItemInfo.append(projectItemInfoName, projectItemInfoStats);
+
+		projectItem.append(projectItemInfo, projectItemAction);
+
+		projectItems.append(projectItem);
+	};
+	defaultCategory(colors, todo)
+
+	categories.forEach((category) => {
+		const projectItem = document.createElement("div");
+		projectItem.classList = "project-item";
+		projectItem.style.outlineColor = colors[category.getCategoryName()];
+
+		let name = category.getCategoryName();
+		let color = colors[name];
+
+		let allCount = 0;
+		let completedCount = 0;
+		let pendingCount = 0;
+		todo.forEach((item) => {
+			if (item.getCategory() === name) {
+				allCount++;
+				if (item.getStatus() === false) {
+					completedCount++;
+				} else {
+					pendingCount++;
+				}
+			}
+		});
+
+		// Project Info
+		const projectItemInfo = document.createElement("div");
+		projectItemInfo.classList = "project-item-info";
+
+		const projectItemInfoName = document.createElement("p");
+		projectItemInfoName.textContent = name;
+		projectItemInfoName.classList = "project-item-info-name";
+		const projectItemInfoStats = document.createElement("div");
+		projectItemInfoStats.classList = "project-item-info-stats";
+
+		const projectItemInfoStats1 = document.createElement("div");
+		const projectItemInfoStats1Name = document.createElement("p");
+		projectItemInfoStats1Name.textContent = "All";
+		const projectItemInfoStats1Number = document.createElement("span");
+		projectItemInfoStats1Number.textContent = allCount;
+
+		projectItemInfoStats1.append(
+			projectItemInfoStats1Name,
+			projectItemInfoStats1Number
+		);
+
+		const projectItemInfoStats2 = document.createElement("div");
+		const projectItemInfoStats2Name = document.createElement("p");
+		projectItemInfoStats2Name.textContent = "Completed";
+		const projectItemInfoStats2Number = document.createElement("span");
+
+		projectItemInfoStats2Number.textContent = completedCount;
+
+		projectItemInfoStats2.append(
+			projectItemInfoStats2Name,
+			projectItemInfoStats2Number
+		);
+
+		const projectItemInfoStats3 = document.createElement("div");
+		const projectItemInfoStats3Name = document.createElement("p");
+		projectItemInfoStats3Name.textContent = "Pending";
+		const projectItemInfoStats3Number = document.createElement("span");
+
+		projectItemInfoStats3Number.textContent = pendingCount;
+
+		projectItemInfoStats3.append(
+			projectItemInfoStats3Name,
+			projectItemInfoStats3Number
+		);
+
+		// Project Actions
+		const projectItemAction = document.createElement("div");
+		projectItemAction.classList = "project-item-action";
+
+		const projectItemRename = document.createElement("div");
+		createSvgIcon(projectItemRename, editIcon);
+		projectItemRename.classList = "project-item-rename btn";
+
+		const projectItemColor = document.createElement("div");
+		createSvgIcon(projectItemColor, swatchIcon);
+		projectItemColor.classList = "project-item-color btn";
+
+		const projectItemMove = document.createElement("div");
+		createSvgIcon(projectItemMove, forwardIcon);
+		projectItemMove.classList = "project-item-move btn";
+
+		const projectItemDelete = document.createElement("div");
+		createSvgIcon(projectItemDelete, deleteIcon);
+		projectItemDelete.classList = "project-item-delete btn";
+
+		projectItemAction.append(
+			projectItemRename,
+			projectItemColor,
+			projectItemMove,
+			projectItemDelete
+		);
+
+		// Append
+
+		projectItemInfoStats.append(
+			projectItemInfoStats1,
+			projectItemInfoStats2,
+			projectItemInfoStats3
+		);
+		projectItemInfo.append(projectItemInfoName, projectItemInfoStats);
+
+		projectItem.append(projectItemInfo, projectItemAction);
+
+		projectItems.append(projectItem);
+	});
+
+	return projectItems;
+}
+export function loadTagList(tags, todo) {
+	// SETTINGS PROJECT ITEM
+
+	let tagItems = document.createElement("div");
+
+	tags.forEach((tag) => {
+		const tagItem = document.createElement("div");
+		tagItem.classList = "tag-item";
+
+		let name = tag.getTagName();
+
+		let allCount = 0;
+		let completedCount = 0;
+		let pendingCount = 0;
+
+		todo.forEach((item) => {
+			let allTags = item.getTags();
+			for (let i = allTags.length - 1; i >= 0; i--) {
+				if (name === allTags[i]) {
+					allCount++;
+					item.getStatus() === false ? completedCount++ : pendingCount++;
+					break;
+				}
+			}
+		});
+
+		// tag Info
+		const tagItemInfo = document.createElement("div");
+		tagItemInfo.classList = "tag-item-info";
+
+		const tagItemInfoName = document.createElement("p");
+		tagItemInfoName.textContent = name;
+		tagItemInfoName.classList = "tag-item-info-name";
+		const tagItemInfoStats = document.createElement("div");
+		tagItemInfoStats.classList = "tag-item-info-stats";
+
+		const tagItemInfoStats1 = document.createElement("div");
+		const tagItemInfoStats1Name = document.createElement("p");
+		tagItemInfoStats1Name.textContent = "All";
+		const tagItemInfoStats1Number = document.createElement("span");
+		tagItemInfoStats1Number.textContent = allCount;
+
+		tagItemInfoStats1.append(tagItemInfoStats1Name, tagItemInfoStats1Number);
+
+		const tagItemInfoStats2 = document.createElement("div");
+		const tagItemInfoStats2Name = document.createElement("p");
+		tagItemInfoStats2Name.textContent = "Completed";
+		const tagItemInfoStats2Number = document.createElement("span");
+
+		tagItemInfoStats2Number.textContent = completedCount;
+
+		tagItemInfoStats2.append(tagItemInfoStats2Name, tagItemInfoStats2Number);
+
+		const tagItemInfoStats3 = document.createElement("div");
+		const tagItemInfoStats3Name = document.createElement("p");
+		tagItemInfoStats3Name.textContent = "Pending";
+		const tagItemInfoStats3Number = document.createElement("span");
+
+		tagItemInfoStats3Number.textContent = pendingCount;
+
+		tagItemInfoStats3.append(tagItemInfoStats3Name, tagItemInfoStats3Number);
+
+		// tag Actions
+		const tagItemAction = document.createElement("div");
+		tagItemAction.classList = "tag-item-action";
+
+		const tagItemRename = document.createElement("div");
+		createSvgIcon(tagItemRename, editIcon);
+		tagItemRename.classList = "tag-item-rename btn";
+
+		const tagItemMove = document.createElement("div");
+		createSvgIcon(tagItemMove, forwardIcon);
+		tagItemMove.classList = "tag-item-move btn";
+
+		const tagItemDelete = document.createElement("div");
+		createSvgIcon(tagItemDelete, deleteIcon);
+		tagItemDelete.classList = "tag-item-delete btn";
+
+		tagItemAction.append(tagItemRename, tagItemMove, tagItemDelete);
+
+		// Append
+
+		tagItemInfoStats.append(
+			tagItemInfoStats1,
+			tagItemInfoStats2,
+			tagItemInfoStats3
+		);
+		tagItemInfo.append(tagItemInfoName, tagItemInfoStats);
+
+		tagItem.append(tagItemInfo, tagItemAction);
+
+		tagItems.append(tagItem);
+	});
+
+	return tagItems;
+}

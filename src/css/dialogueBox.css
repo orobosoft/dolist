@@ -1,0 +1,56 @@
+.dialogue__box {
+  font-size: 1.6rem;
+	padding: 2rem;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	width: 50rem;
+	background-color: var(--bg-color);
+	outline: 2px solid rgba(var(--color-3-t), 0.15);
+	border-radius: 1rem;
+	-webkit-border-radius: 1rem;
+	-moz-border-radius: 1rem;
+	-ms-border-radius: 1rem;
+	-o-border-radius: 1rem;
+}
+.dialogue__title{
+  font-size: 2rem;
+}
+.dialogue__secondary {
+	display: none;
+  gap: 1rem;
+}
+.dialogue__secondary .outer-check{
+  margin-top: 2px;
+}
+.dialogue__buttons {
+	display: flex;
+	justify-content: end;
+	background-color: #fff;
+	gap: 1.5rem;
+  padding-top: .5rem;
+}
+.dialogue__button--okay,
+.dialogue__button--cancel {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 10rem;
+	height: 4rem;
+  font-weight: bold;
+}
+.dialogue__button--cancel {
+	color: var(--color-7);
+  	border: 2px solid rgba(var(--color-7-t), 0.15);
+}
+.dialogue__button--cancel:hover {
+	color: var(--bg-color);
+	background-color: var(--color-7);
+}
+.dialogue__button--okay {
+	background-color: var(--color-3);
+	color: var(--color-5);
+}
+.dialogue__button--okay:hover {
+  	outline: 2px solid rgba(var(--color-3-t), 0.15);
+}

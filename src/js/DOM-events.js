@@ -1,5 +1,6 @@
 import category, { categories } from "./category";
 import { appData, loadApp, storeData, updateLocalStorage } from "./data";
+import { createDialogueBox } from "./dialogueBox";
 import {
 	createSvgIcon,
 	dayAndNightIcon,

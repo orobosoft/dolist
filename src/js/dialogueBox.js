@@ -10,7 +10,7 @@ export function createDialogueBox(
 	const app = document.querySelector("#app");
 
 	const background = document.createElement("div");
-	background.classList = "e-card-blur";
+	background.classList = "dialogue__background";
 
 	const dialogueBox = document.createElement("div");
 	dialogueBox.classList = "dialogue__box";
@@ -32,6 +32,7 @@ export function createDialogueBox(
 	outerCheck.appendChild(innerCheck);
 
 	const secondaryDescription = document.createElement("p");
+	secondaryDescription.classList = "dialogue-secondary-description";
 	secondaryDescription.textContent = optionDescription;
 
 	secondary.append(outerCheck, secondaryDescription);
@@ -52,18 +53,22 @@ export function createDialogueBox(
 
 	// DIALOGUE CARD EVENTS
 	const dialogueBox1 = document.querySelector(".dialogue__box");
-	const background1 = document.querySelector(".e-card-blur");
+	const background1 = document.querySelector(".dialogue__background");
 
 	dialogueBox.addEventListener("click", function (e) {
-		if (e.target.classList.contains("outer-check")) {
+		if (
+			e.target.classList.contains("outer-check") ||
+			e.target.classList.contains("dialogue-secondary-description")
+		) {
 			dialogueBox.classList.toggle("completed");
 		}
 
 		if (e.target.classList.contains("dialogue__button--okay")) {
+			background1.remove();
 			if (dialogueBox1.classList.contains("completed")) {
-				functionIfOkayAndOptionIsSelected;
+				functionIfOkayAndOptionIsSelected();
 			} else {
-				functionIfOkay;
+				functionIfOkay();
 			}
 		}
 		if (e.target.classList.contains("dialogue__button--cancel")) {

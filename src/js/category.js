@@ -76,9 +76,6 @@ export default function category() {
 	};
 
 	const deleteCategory = (categoryName, deleteEverything) => {
-		console.log('inside here now');
-		console.log(todoItemList);
-		console.log(arr);
 		if (deleteEverything) {
 			// delete both the list and all items in the category
 			// delete category from categories list

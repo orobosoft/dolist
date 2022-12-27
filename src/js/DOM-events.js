@@ -17,6 +17,7 @@ import {
 	expandCard,
 	settingsPageContainer,
 	loadProjectList,
+	loadTagList,
 } from "./view";
 
 // Colors
@@ -134,19 +135,67 @@ document.addEventListener("click", (e) => {
 		let catName =
 			e.target.parentElement.parentElement.firstChild.firstChild.textContent;
 
-		category().deleteCategory(catName, false);
-		openToday(todoItemList)
-		showProjectList(categories)
-		loopTags(tags)
-		updateStorage()
+		createDialogueBox(
+			"This will delete " +
+				catName +
+				" project and move the tasks to Inbox",
+			true,
+			"Delete the "+catName+" project and all tasks in it",
+			DeleteAndMoveTasks,
+			DeleteEverything
+		);
 
+		function DeleteAndMoveTasks() {
+			category().deleteCategory(catName, false);
+			reloadSettingLists();
+		}
+
+		function DeleteEverything() {
+			category().deleteCategory(catName, true);
+			reloadSettingLists();
+		}
+	}
+
+	if (e.target.classList.contains("tag-item-delete")) {
+		let tagName =
+			e.target.parentElement.parentElement.firstChild.firstChild.textContent;
+
+		createDialogueBox(
+			"This will delete " +
+				tagName +
+				" from the tags list and remove it from any task it is in",
+			true,
+			"Delete the list and all tasks having " + tagName + " tag",
+			DeleteAndRemoveTags,
+			DeleteEverything
+		);
+
+		function DeleteAndRemoveTags() {
+			tag().deleteTag(tagName, false);
+			reloadSettingLists();
+		}
+
+		function DeleteEverything() {
+			tag().deleteTag(tagName, true);
+			reloadSettingLists();
+		}
+	}
+	function reloadSettingLists() {
+		openToday(todoItemList);
+		showProjectList(categories);
+		loopTags(tags);
+		updateStorage();
 
 		const projectList = document.querySelector(".settings__project-list");
 		projectList.replaceChildren(
 			loadProjectList(colors(), categories, todoItemList)
 		);
+
+		const tagList = document.querySelector(".settings__tag-list");
+		tagList.replaceChildren(loadTagList(tags, todoItemList));
 	}
 });
+
 // Image function
 function expandImage(e) {
 	const pic = document.querySelector(`.${e} img`);
@@ -397,7 +446,7 @@ function toggleProject(arr) {
 
 export function showProjectList(arr) {
 	const ul = document.querySelector(".project-ul");
-	ul.replaceChildren()
+	ul.replaceChildren();
 
 	for (let i = 0; i < arr.length; i++) {
 		const e = arr[i];
@@ -479,7 +528,7 @@ function renderTags(arr) {
 }
 export function loopTags(array) {
 	const tagUl = document.querySelector(".tag-ul");
-	tagUl.replaceChildren()
+	tagUl.replaceChildren();
 
 	for (let i = 0; i < array.length; i++) {
 		const item = array[i].getTagName();

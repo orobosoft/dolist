@@ -1,4 +1,4 @@
-import Todo from "./todo-items.js";
+import Todo, { todoItemList } from "./todo-items.js";
 
 // Get todo-items list
 const arr = Todo().getTodoItemList();
@@ -10,11 +10,11 @@ const TagItem = (name) => {
 	const getTagName = () => {
 		return tagName;
 	};
-  const tagTodo = () => {
-    const filtered = []
+	const tagTodo = () => {
+		const filtered = [];
 		arr.forEach((e, i) => {
-      const t = e.getTags();
-      console.log(t);
+			const t = e.getTags();
+			console.log(t);
 			for (let n = 0; n < t.length; n++) {
 				if (t[n].toLowerCase() === tagName.toLowerCase()) {
 					filtered.push(e);
@@ -53,29 +53,37 @@ export default function tag() {
 	};
 
 	const createTag = (name) => {
-    const newTag = TagItem(name);
+		const newTag = TagItem(name);
 
-    tags.push(newTag);
-    return newTag
+		tags.push(newTag);
+		return newTag;
 	};
 
-	const deleteTag = (tagName) => {
+	const deleteTag = (tagName, option = false) => {
 		// delete tag from tags list
 		for (let i = tags.length - 1; i >= 0; i--) {
-			if (tags[i] === tagName) {
+			if (tags[i].getTagName() === tagName) {
 				tags.splice(i, 1);
 			}
 		}
-
-		// delete the tag in todo-items
-		for (let i = arr.length - 1; i >= 0; i--) {
-			arr[i].tag.forEach((e, i) => {
-				if (e === tagName) {
-					arr[i].splice(i, 1);
+		// Delete todo items having tag
+		if (option) {
+			for (let i = todoItemList.length - 1; i >= 0; i--) {
+				if (todoItemList[i].getTags().includes(tagName)) {
+					todoItemList.splice(i, 1);
 				}
-			});
-			// push the updated array to the default array
-			Todo().setTodoItemList(arr);
+			}
+		} else {
+			// delete the tag in todo-items
+			for (let i = todoItemList.length - 1; i >= 0; i--) {
+				todoItemList[i].getTags().forEach((e, b) => {
+					if (e === tagName) {
+						todoItemList[i].getTags().splice(i, 1);
+					}
+				});
+				// push the updated array to the default array
+				// Todo().setTodoItemList(arr);
+			}
 		}
 	};
 

@@ -169,16 +169,21 @@ function generateData() {
 
 	for (let i = 0; i < 10; i++) {
 		const n = categoryArray[Math.floor(Math.random() * categoryArray.length)];
+		let pri = ["low", "medium", "high"]
+		let random = pri[Math.floor(Math.random() * 3)]
 
 		const newTodo = todo().createTodoItem();
+		newTodo.setPriority(random)
 		newTodo.setCategory(n.getCategoryName());
 		newTodo.setTitle(`Task ${i + 1}`);
 
 		for (let i = 0; i < 5; i++) {
 			newTodo.addCheckList(`CheckList ${i + 1}`);
 		}
-		for (let i = 0; i < tagArray.length; i++) {
-			newTodo.addTag(tagArray[i].getTagName());
+		for (let i = 0; i < 4; i++) {
+			newTodo.addTag(
+				tagArray[Math.floor(Math.random() * tagArray.length)].getTagName()
+			);
 		}
 		todoArray.push(newTodo);
 	}

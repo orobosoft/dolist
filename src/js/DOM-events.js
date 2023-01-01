@@ -100,6 +100,10 @@ function resetUserData() {
 		} else {
 			firstLoad(newUser2);
 		}
+		openOverview(todoItemList);
+		showProjectList(categories);
+		loopTags(tags);
+		document.querySelector(".settings-page-bg").remove();
 	}
 
 	createDialogueBox(
@@ -139,7 +143,7 @@ document.addEventListener("click", (e) => {
 	}
 	// Change Users
 	if (e.target.classList.contains("users")) {
-		removeAsidePop()
+		removeAsidePop();
 		let username = e.target.dataset.user;
 
 		defaultAppData.active = username;
@@ -435,9 +439,6 @@ document.addEventListener("click", (e) => {
 	// Reset User Data
 	if (e.target.classList.contains("settings__reset-button")) {
 		resetUserData();
-		openToday(todoItemList);
-		showProjectList(categories);
-		loopTags(tags);
 	}
 });
 
@@ -738,7 +739,7 @@ function openProject() {
 	Array.from(document.querySelectorAll(".project-ul li")).forEach(
 		(element, index) => {
 			element.addEventListener("click", () => {
-	removeAsidePop();
+				removeAsidePop();
 
 				clearAllAddedStyle();
 
@@ -815,7 +816,7 @@ function openTag() {
 	Array.from(document.querySelectorAll(".tag-ul li")).forEach(
 		(element, index) => {
 			element.addEventListener("click", (e) => {
-	removeAsidePop();
+				removeAsidePop();
 
 				clearAllAddedStyle();
 
@@ -1120,7 +1121,7 @@ function expandCardEvents(a) {
 
 		// Select Tag
 		if (e.target.classList.contains("tag-list-item")) {
-	removeAsidePop();
+			removeAsidePop();
 
 			const tags = document.querySelector(".e-card__tag-value");
 			todo.addTag(e.target.textContent);
@@ -1369,13 +1370,11 @@ function removeAsidePop() {
 	if (aside.classList.contains("aside-pop")) {
 		aside.classList = "aside aside-pop slide-out";
 
-
 		setTimeout(() => {
 			aside.style.display = "none";
 		}, 550);
 		let bgElement = document.querySelector(".empty-bg");
 		bgElement.style.display = "none";
 		bgElement.remove();
-
 	}
 }

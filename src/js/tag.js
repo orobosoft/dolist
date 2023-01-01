@@ -10,6 +10,9 @@ const TagItem = (name) => {
 	const getTagName = () => {
 		return tagName;
 	};
+	const changeTagName = (newName) => {
+		tagName = newName;
+	};
 	const tagTodo = () => {
 		const filtered = [];
 		arr.forEach((e, i) => {
@@ -27,12 +30,13 @@ const TagItem = (name) => {
 	return {
 		getTagName,
 		tagTodo,
+		changeTagName,
 	};
 };
 
 // Loop through todo-items list and change tag name
 const updateTag = (oldCat, newCat) => {
-	arr.forEach((li) => {
+	todoItemList.forEach((li) => {
 		li.forEach((i) => {
 			if (i === oldCat) {
 				i = newCat;
@@ -44,6 +48,9 @@ const updateTag = (oldCat, newCat) => {
 };
 
 export let tags = [];
+export function resetTags() {
+	tags = []
+}
 export default function tag() {
 	const getTags = () => {
 		return tags;
@@ -57,6 +64,21 @@ export default function tag() {
 
 		tags.push(newTag);
 		return newTag;
+	};
+
+	const renameTag = (oldName, newName) => {
+		for (let i = tags.length - 1; i >= 0; i--) {
+			if (tags[i].getTagName() === oldName) {
+				tags[i].changeTagName(newName);
+			}
+		}
+		todoItemList.forEach((li) => {
+			li.getTags().forEach((i) => {
+				if (i === oldName) {
+					i = newName;
+				}
+			});
+		});
 	};
 
 	const deleteTag = (tagName, option = false) => {
@@ -92,6 +114,7 @@ export default function tag() {
 		deleteTag,
 		getTags,
 		setTags,
+		renameTag,
 	};
 }
 

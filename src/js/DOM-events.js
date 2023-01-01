@@ -1,6 +1,24 @@
 import category, { categories } from "./category";
-import { appData, loadApp, storeData, updateLocalStorage } from "./data";
-import { createDialogueBox } from "./dialogueBox";
+import {
+	themeColors,
+	defaultAppData,
+	appData,
+	loadApp,
+	storeData,
+	updateLocalStorage,
+	updateUserDetails,
+	updateAccentColor,
+	firstLoad,
+	demo,
+	newUser1,
+	newUser2,
+} from "./data";
+import {
+	createDialogueBox,
+	createDialogueBoxColor,
+	createDialogueBoxDropdown,
+	createDialogueBoxInput,
+} from "./dialogueBox";
 import {
 	createSvgIcon,
 	dayAndNightIcon,
@@ -21,7 +39,7 @@ import {
 } from "./view";
 
 // Colors
-let colors = getColors;
+export let colors = getColors;
 function getColors() {
 	let colors = {};
 	const html = getComputedStyle(document.querySelector("html"));
@@ -70,6 +88,33 @@ function updateStorage() {
 
 	localStorage.setItem(`${active}`, `${data}`);
 }
+function resetUserData() {
+	let data = JSON.stringify(storeData());
+	let active = localStorage.getItem("active");
+
+	function resetUserDataConfirm() {
+		if (active === "demo") {
+			firstLoad(demo);
+		} else if (active === "user1") {
+			firstLoad(newUser1);
+		} else {
+			firstLoad(newUser2);
+		}
+	}
+
+	createDialogueBox(
+		"This will delete all tasks, projects, tags and set all data for this User back to default. Are you sure?",
+		false,
+		"",
+		resetUserDataConfirm,
+		"",
+		"Cancel",
+		"Reset"
+	);
+
+	// localStorage.setItem(`${active}`, `${data}`);
+}
+
 // Event to load & select theme
 document.addEventListener("click", (e) => {
 	loadTheme(e);
@@ -77,6 +122,7 @@ document.addEventListener("click", (e) => {
 
 	// Show Users
 	if (e.target.classList.contains("user-name")) {
+		updateUserDetails();
 		loadUsers();
 	} else {
 		let users = document.querySelector(".user-name .list");
@@ -91,14 +137,15 @@ document.addEventListener("click", (e) => {
 	}
 	// Change Users
 	if (e.target.classList.contains("users")) {
-		let username = e.target.firstElementChild.textContent.toLowerCase();
+		let username = e.target.dataset.user;
+
+		console.log(e.target);
+		// let username = e.target.firstElementChild.textContent.toLowerCase();
 
 		console.log(username);
 
-		console.log(appData.active);
-		appData.active = username;
-		console.log(appData.active);
-		// updateStorage()
+		defaultAppData.active = username;
+		updateStorage();
 
 		// Remove previous projects and tags
 		const ul = document.querySelector(".project-ul");
@@ -110,10 +157,15 @@ document.addEventListener("click", (e) => {
 		loadApp();
 	}
 
+	console.log(e.target.classList);
 	// Expand User Picture
-	if (e.target.classList.contains("user-picture")) {
+	if (
+		e.target.classList.contains("user-picture") ||
+		e.target.classList.contains("settings__picture")
+	) {
 		app.append(expandImage("user-picture"));
 		let blur = document.querySelector(".e-card-blur");
+		blur.style.zIndex = 1001;
 		blur.addEventListener("click", (e) => {
 			if (
 				e.target.classList.contains("e-card-blur") ||
@@ -130,19 +182,35 @@ document.addEventListener("click", (e) => {
 	}
 
 	// SETTINGS PAGE
+	// Reload Setting's Lists
+	function reloadSettingLists() {
+		openToday(todoItemList);
+		showProjectList(categories);
+		loopTags(tags);
+		updateStorage();
+
+		const projectList = document.querySelector(".settings__project-list");
+		projectList.replaceChildren(
+			loadProjectList(colors(), categories, todoItemList)
+		);
+
+		const tagList = document.querySelector(".settings__tag-list");
+		tagList.replaceChildren(loadTagList(tags, todoItemList));
+	}
+
 	// Delete project
 	if (e.target.classList.contains("project-item-delete")) {
 		let catName =
 			e.target.parentElement.parentElement.firstChild.firstChild.textContent;
 
 		createDialogueBox(
-			"This will delete " +
-				catName +
-				" project and move the tasks to Inbox",
+			"This will delete " + catName + " project and move the tasks to Inbox",
 			true,
-			"Delete the "+catName+" project and all tasks in it",
+			"Delete the " + catName + " project and all tasks in it",
 			DeleteAndMoveTasks,
-			DeleteEverything
+			DeleteEverything,
+			"Cancel",
+			"Okay"
 		);
 
 		function DeleteAndMoveTasks() {
@@ -156,6 +224,7 @@ document.addEventListener("click", (e) => {
 		}
 	}
 
+	// Tag delete
 	if (e.target.classList.contains("tag-item-delete")) {
 		let tagName =
 			e.target.parentElement.parentElement.firstChild.firstChild.textContent;
@@ -180,19 +249,198 @@ document.addEventListener("click", (e) => {
 			reloadSettingLists();
 		}
 	}
-	function reloadSettingLists() {
+
+	// Move project
+	if (e.target.classList.contains("project-item-move")) {
+		let newCatName = "";
+		let catName =
+			e.target.parentElement.parentElement.firstChild.firstChild.textContent;
+
+		createDialogueBoxDropdown(
+			"Select the project you want to move all the tasks in this list to:",
+			catName,
+			categories,
+			moveProjectConfirmation,
+			"Cancel",
+			"move"
+		);
+
+		function moveProject() {
+			newCatName === ""
+				? category().moveCategory(catName, catName)
+				: category().moveCategory(catName, newCatName);
+			reloadSettingLists();
+		}
+		function moveProjectConfirmation(text) {
+			newCatName = text;
+
+			createDialogueBox(
+				"Are you sure you want to move all tasks in " +
+					catName +
+					" to " +
+					newCatName +
+					"?",
+				false,
+				"",
+				moveProject,
+				null,
+				"Cancel",
+				"Move"
+			);
+		}
+	}
+	// Rename Projects
+	if (e.target.classList.contains("project-item-rename")) {
+		let newCatName = "";
+		let catName =
+			e.target.parentElement.parentElement.firstChild.firstChild.textContent;
+
+		createDialogueBoxInput(
+			"Enter new name:",
+			renameProjectConfirmation,
+			"Cancel",
+			"Rename"
+		);
+
+		function renameProject() {
+			newCatName === ""
+				? category().renameCategory(catName, catName)
+				: category().renameCategory(catName, newCatName);
+			reloadSettingLists();
+		}
+		function renameProjectConfirmation(text) {
+			newCatName = text;
+
+			createDialogueBox(
+				"Are you sure you want to rename the project from " +
+					catName +
+					" to " +
+					newCatName +
+					"?",
+				false,
+				"",
+				renameProject,
+				null,
+				"Cancel",
+				"Rename"
+			);
+		}
+	}
+	// Change Project Color
+	if (e.target.classList.contains("project-item-color")) {
+		let catName =
+			e.target.parentElement.parentElement.firstChild.firstChild.textContent;
+
+		createDialogueBoxColor(
+			"Select new color:",
+			changeProjectColor,
+			"Cancel",
+			"Okay"
+		);
+
+		function changeProjectColor(newColor) {
+			newColor === "" ? "" : category().changeCategoryColor(catName, newColor);
+			reloadSettingLists();
+		}
+	}
+
+	// Rename Tag
+	if (e.target.classList.contains("tag-item-rename")) {
+		let newTagName = "";
+		let tagName =
+			e.target.parentElement.parentElement.firstChild.firstChild.textContent;
+
+		createDialogueBoxInput(
+			"Enter new name:",
+			renameProjectConfirmation,
+			"Cancel",
+			"Rename"
+		);
+
+		function renameTag() {
+			newTagName === ""
+				? tag().renameTag(tagName, tagName)
+				: tag().renameTag(tagName, newTagName);
+			reloadSettingLists();
+		}
+		function renameProjectConfirmation(text) {
+			newTagName = text;
+
+			createDialogueBox(
+				"Are you sure you want to rename this tag from " +
+					tagName +
+					" to " +
+					newTagName +
+					"?",
+				false,
+				"",
+				renameTag,
+				null,
+				"Cancel",
+				"Rename"
+			);
+		}
+	}
+
+	// Change User Name
+	if (e.target.classList.contains("settings__name-edit")) {
+		let newName = "";
+		let oldName = appData.name;
+
+		createDialogueBoxInput(
+			"Enter new name:",
+			renameProjectConfirmation,
+			"Cancel",
+			"Rename"
+		);
+
+		function renameProject() {
+			newName === "" ? (appData.name = oldName) : (appData.name = newName);
+			let na = document.querySelector(".settings__name h1");
+			na.textContent = newName;
+			updateStorage();
+			updateUserDetails();
+			reloadSettingLists();
+		}
+		function renameProjectConfirmation(text) {
+			newName = text;
+
+			createDialogueBox(
+				"Are you sure you want to change your name from " +
+					oldName +
+					" to " +
+					newName +
+					"?",
+				false,
+				"",
+				renameProject,
+				null,
+				"Cancel",
+				"Rename"
+			);
+		}
+	}
+
+	// Change Accent Color
+	if (e.target.classList.contains("color-select__color")) {
+		let colors = Array.from(document.querySelectorAll(".color-select__color"));
+		colors.forEach((element) => {
+			element.classList.remove("color-selected");
+		});
+		let num = e.target.dataset.accent;
+
+		e.target.classList.add("color-selected");
+		updateAccentColor(num);
+		appData.color = num;
+		updateStorage();
+	}
+
+	// Reset User Data
+	if (e.target.classList.contains("settings__reset-button")) {
+		resetUserData();
 		openToday(todoItemList);
 		showProjectList(categories);
 		loopTags(tags);
-		updateStorage();
-
-		const projectList = document.querySelector(".settings__project-list");
-		projectList.replaceChildren(
-			loadProjectList(colors(), categories, todoItemList)
-		);
-
-		const tagList = document.querySelector(".settings__tag-list");
-		tagList.replaceChildren(loadTagList(tags, todoItemList));
 	}
 });
 
@@ -337,6 +585,28 @@ searchBar.addEventListener("input", (e) => {
 });
 settings.addEventListener("click", (e) => {
 	app.append(settingsPageContainer(colors(), categories, tags, todoItemList));
+
+	let data = JSON.parse(localStorage.getItem(localStorage.getItem("active")));
+
+	let pic = document.querySelector(".settings__picture img");
+	pic.src = data.picture;
+	let name = document.querySelector(".settings__name h1");
+	name.textContent = data.name;
+
+	let color1 = document.querySelector('[data-accent="1"]');
+	let color2 = document.querySelector('[data-accent="2"]');
+	let color3 = document.querySelector('[data-accent="3"]');
+	let color4 = document.querySelector('[data-accent="4"]');
+	let color5 = document.querySelector('[data-accent="5"]');
+
+	let selected = document.querySelector(`[data-accent="${data.color}"]`);
+	selected.classList.add("color-selected");
+
+	color1.style.backgroundColor = themeColors[0].color1;
+	color2.style.backgroundColor = themeColors[1].color1;
+	color3.style.backgroundColor = themeColors[2].color1;
+	color4.style.backgroundColor = themeColors[3].color1;
+	color5.style.backgroundColor = themeColors[4].color1;
 
 	let set = document.querySelector(".settings-page-bg");
 	set.addEventListener("click", (e) => {
@@ -814,9 +1084,21 @@ function expandCardEvents(a) {
 		}
 		// DELETE todo
 		if (e.target.classList.contains("e-card__delete")) {
-			todoItemList.splice(a, 1);
-			displayTodo(currentArray());
-			card.remove();
+			const deleteTodo = () => {
+				todoItemList.splice(a, 1);
+				displayTodo(currentArray());
+				card.remove();
+			};
+			createDialogueBox(
+				"Are you sure you want to delete this task?",
+				false,
+				false,
+				"",
+				deleteTodo,
+				null,
+				"Cancel",
+				"Delete"
+			);
 		}
 
 		// TAGS

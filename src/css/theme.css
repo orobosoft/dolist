@@ -46,6 +46,7 @@ html[data-theme="dark"] {
 	/* --color-5: var(--bg-color); */
 
 	--color-7: #f04c0f;
+	--color-7-t: 240, 76, 15;
 }
 html[data-theme="dark"] body {
 	color: var(--color-4);

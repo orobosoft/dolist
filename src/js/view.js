@@ -1,4 +1,3 @@
-import UserImage from "../img/user.jpg";
 import {
 	createSvgIcon,
 	overviewIcon,
@@ -253,25 +252,30 @@ function renderMain() {
 	usersOptionWrapper.classList = "list";
 	const usersOption = document.createElement("ul");
 	// usersOption.classList = 'list-close'
+
+
 	const demo = document.createElement("li");
 	demo.classList = "flex users demo";
+	demo.setAttribute("data-user", 'demo');
 	const demoText = document.createElement("p");
-	demoText.textContent = "Demo";
+	// demoText.textContent = "Orobbbb";
 	demo.append(demoText);
 
 	const user1 = document.createElement("li");
 	user1.classList = "flex users user";
+	user1.setAttribute("data-user", "user1");
 	const user1Text = document.createElement("p");
-	user1Text.textContent = "User";
+	// user1Text.textContent = "User";
 	user1.append(user1Text);
 
 	const user2 = document.createElement("li");
 	user2.classList = "flex users user1";
+	user2.setAttribute("data-user", "user2");
 	const user2Text = document.createElement("p");
-	user2Text.textContent = "User1";
+	// user2Text.textContent = "User1";
 	user2.append(user2Text);
 
-	usersOption.append(demo, user2, user1);
+	usersOption.append(demo, user1, user2);
 	usersOptionWrapper.appendChild(usersOption);
 
 	userName.append(usersOptionWrapper);
@@ -279,7 +283,6 @@ function renderMain() {
 	const userPicture = document.createElement("div");
 	userPicture.classList = "user-picture";
 	const image = new Image();
-	// image.src = UserImage;
 	image.alt = "User Image";
 	userPicture.appendChild(image);
 
@@ -803,13 +806,13 @@ export function settingsPageContainer(colors, categories, tags, todoList) {
 	pic.classList = "settings__picture";
 
 	const picImage = new Image();
-	picImage.src = "http://localhost:5500/dist/344253d794154cde1033.jpg";
+	// picImage.src = "http://localhost:5500/dist/344253d794154cde1033.jpg";
 	pic.append(picImage);
 
 	const name = document.createElement("div");
 	name.classList = "settings__name";
 	const nameText = document.createElement("h1");
-	nameText.textContent = "Orobosa Ikponmwosa";
+	// nameText.textContent = "Orobosa Ikponmwosa";
 
 	// Edit buttons
 	const editButtons = document.createElement("div");
@@ -841,31 +844,36 @@ export function settingsPageContainer(colors, categories, tags, todoList) {
 	colorHeader.textContent = "Accent Color";
 
 	const color1 = document.createElement("div");
-	color1.classList = "color-select__color-1";
+	color1.classList = "color-select__color btn";
+	color1.setAttribute('data-accent', '1')
 	const color1Display = document.createElement("div");
 	const color1Text = document.createElement("p");
 	color1.append(color1Display, color1Text);
 
 	const color2 = document.createElement("div");
-	color2.classList = "color-select__color-2";
+	color2.classList = "color-select__color btn";
+	color2.setAttribute("data-accent", "2");
 	const color2Display = document.createElement("div");
 	const color2Text = document.createElement("p");
 	color2.append(color2Display, color2Text);
 
 	const color3 = document.createElement("div");
-	color3.classList = "color-select__color-3";
+	color3.classList = "color-select__color btn";
+	color3.setAttribute("data-accent", "3");
 	const color3Display = document.createElement("div");
 	const color3Text = document.createElement("p");
 	color3.append(color3Display, color3Text);
 
 	const color4 = document.createElement("div");
-	color4.classList = "color-select__color-4";
+	color4.classList = "color-select__color btn";
+	color4.setAttribute("data-accent", "4");
 	const color4Display = document.createElement("div");
 	const color4Text = document.createElement("p");
 	color4.append(color4Display, color4Text);
 
 	const color5 = document.createElement("div");
-	color5.classList = "color-select__color-5";
+	color5.classList = "color-select__color btn";
+	color5.setAttribute("data-accent", "5");
 	const color5Display = document.createElement("div");
 	const color5Text = document.createElement("p");
 	color5.append(color5Display, color5Text);
@@ -917,7 +925,18 @@ export function settingsPageContainer(colors, categories, tags, todoList) {
 	cont2.classList = "settings-lower-page";
 	cont2.append(project, tag);
 
-	body.append(cont1, cont2);
+	const cont3 = document.createElement('div');
+	cont3.classList = 'settings-reset-page'
+
+	const resetButton = document.createElement('button');
+	resetButton.classList = 'btn settings__reset-button'
+	resetButton.textContent = 'Reset Data'
+	cont3.append(resetButton)
+
+
+
+
+	body.append(cont1, cont2, cont3);
 
 	background.append(header, body);
 
@@ -1207,15 +1226,11 @@ export function loadTagList(tags, todo) {
 		createSvgIcon(tagItemRename, editIcon);
 		tagItemRename.classList = "tag-item-rename btn";
 
-		const tagItemMove = document.createElement("div");
-		createSvgIcon(tagItemMove, forwardIcon);
-		tagItemMove.classList = "tag-item-move btn";
-
 		const tagItemDelete = document.createElement("div");
 		createSvgIcon(tagItemDelete, deleteIcon);
 		tagItemDelete.classList = "tag-item-delete btn";
 
-		tagItemAction.append(tagItemRename, tagItemMove, tagItemDelete);
+		tagItemAction.append(tagItemRename, tagItemDelete);
 
 		// Append
 

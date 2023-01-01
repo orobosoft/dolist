@@ -1,7 +1,9 @@
-import category, { categories } from "./category";
-import tag, { tags } from "./tag";
-import todo, { todoItemList } from "./todo-items";
-import UserImage from "../img/user.jpg";
+import category, { categories, resetCategories } from "./category";
+import tag, { resetTags, tags } from "./tag";
+import todo, { resetTodoItemList, todoItemList } from "./todo-items";
+import UserImage from "../img/user.png";
+import UserImage1 from "../img/user_2.png";
+import UserImage2 from "../img/user_3.jpg";
 import {
 	autoTheme,
 	loopTags,
@@ -11,11 +13,11 @@ import {
 	showProjectList,
 } from "./DOM-events";
 
-const colors = [
+export const themeColors = [
 	{
 		color1: "#6aa7b3",
 		color1a: "106, 167, 179",
-		color2: "#fff",
+		color2: "#f5f5f5",
 	},
 	{
 		color1: "#71d400",
@@ -25,12 +27,28 @@ const colors = [
 	{
 		color1: "#0063d4",
 		color1a: "0, 99, 212",
-		color2: "#fff",
+		color2: "#f5f5f5",
+	},
+	{
+		color1: "#6e4458",
+		color1a: "110, 68, 88",
+		color2: "#f5f5f5",
+	},
+	{
+		color1: "#c3807a",
+		color1a: "195, 128, 122",
+		color2: "#f5f5f5",
 	},
 ];
-function updateAccentColor(num) {
+export let appData = {
+	demo: "Demo Person",
+	user1: "New User 1",
+	user2: "New User 2",
+};
+
+export function updateAccentColor(num) {
 	const html = document.querySelector("html");
-	const p = colors[Number(num) - 1];
+	const p = themeColors[Number(num) - 1];
 	html.style.setProperty("--color-3", `${p.color1}`);
 	html.style.setProperty("--color-3-t", `${p.color1a}`);
 	html.style.setProperty("--color-5", `${p.color2}`);
@@ -39,13 +57,19 @@ function getAccentColorNumber() {
 	const html = getComputedStyle(document.querySelector("html"));
 	const accent = html.getPropertyValue("--color-3");
 
-	for (let i = 0; i < colors.length; i++) {
-		const element = colors[i];
+	for (let i = 0; i < themeColors.length; i++) {
+		const element = themeColors[i];
 		if (element.color1 === accent) return i + 1;
 	}
 }
 
 function setData(data) {
+	appData.id = data.id;
+	appData.theme = data.theme;
+	appData.picture = data.picture;
+	appData.color = data.color;
+	appData.name = data.name;
+
 	let newTags = [];
 	let newCategories = [];
 	let newTodoItemList = [];
@@ -129,13 +153,7 @@ function setData(data) {
 }
 
 function generateData() {
-	let newDemo = {
-		name: "Demo",
-		picture: UserImage,
-		theme: "system",
-		color: "1",
-	};
-
+	let newDemo = {};
 	let tagArray = [];
 	let categoryArray = [];
 	let todoArray = [];
@@ -168,14 +186,41 @@ function generateData() {
 	newDemo.categoryArray = categoryArray;
 	newDemo.todoArray = todoArray;
 
+	newDemo.id = "demo";
+	newDemo.name = "Demo Person";
+	newDemo.picture = UserImage;
+	newDemo.theme = "system";
+	newDemo.color = "1";
+
 	return newDemo;
 }
 
-let demo = generateData();
+export let demo = generateData();
 
-const newUser = {
-	name: "User",
-	picture: UserImage,
+export const newUser1 = {
+	id: "user1",
+	name: "New User 1",
+	picture: UserImage1,
+	theme: "system",
+	color: "2",
+	tagArray: [
+		tag().createTag("Home"),
+		tag().createTag("Art"),
+		tag().createTag("Love"),
+		tag().createTag("Personal"),
+	],
+	categoryArray: [
+		category().createCategory("doList", "red"),
+		category().createCategory("Development", "blue"),
+		category().createCategory("Office", "green"),
+		category().createCategory("Personal", "yellow"),
+	],
+	todoArray: [],
+};
+export const newUser2 = {
+	id: "user2",
+	name: "New User 2",
+	picture: UserImage2,
 	theme: "system",
 	color: "3",
 	tagArray: [
@@ -192,11 +237,26 @@ const newUser = {
 	],
 	todoArray: [],
 };
-let user = newUser;
 
-export let appData = { active: "demo", demo: demo, user: user };
+export let defaultAppData = {
+	active: "demo",
+	demo: demo,
+	user1: newUser1,
+	user2: newUser2,
+};
 
-function firstLoad(data) {
+export function firstLoad(data) {
+	resetCategories()
+	resetTags()
+	resetTodoItemList()
+	
+	appData.id = data.id;
+	appData.picture = data.picture;
+	appData.theme = data.theme;
+	appData.name = data.name;
+	appData.color = data.color;
+
+	console.log(data);
 	let name = document.querySelector(".user-name p");
 	let img = document.querySelector(".user-picture img");
 
@@ -205,22 +265,21 @@ function firstLoad(data) {
 	updateAccentColor(data.color);
 	autoTheme(data.theme);
 
+
+
 	todo().setTodoItemList(data.todoArray);
 	category().setCategories(data.categoryArray);
 	tag().setTags(data.tagArray);
 	console.log(tags);
 
-	localStorage.setItem("active", `${data.name.toLowerCase()}`);
-	localStorage.setItem(
-		`${data.name.toLowerCase()}`,
-		JSON.stringify(storeData())
-	);
+	localStorage.setItem("active", `${data.id}`);
+	localStorage.setItem(`${data.id}`, JSON.stringify(storeData()));
 }
 
 export function loadApp() {
 	// localStorage.clear()
 	console.log("LS: " + localStorage.getItem("active"));
-	console.log("N: " + appData.active);
+	console.log("N: " + defaultAppData.active);
 	let data = localStorage.getItem(localStorage.getItem("active"));
 
 	if (data) {
@@ -229,12 +288,53 @@ export function loadApp() {
 		openToday(todoItemList);
 		showProjectList(categories);
 		loopTags(tags);
+		updateUserDetails();
+		console.log("NEWWW");
 	} else {
-		firstLoad(appData[appData.active]);
+		console.log(defaultAppData[defaultAppData.active]);
+		firstLoad(defaultAppData[defaultAppData.active]);
+		updateUserDetails();
 		openToday(todoItemList);
 		showProjectList(categories);
 		loopTags(tags);
+		updateUserDetails();
+		console.log("OOLDDD");
 	}
+}
+export function updateUserDetails() {
+	let data1 = localStorage.getItem("demo");
+	let data2 = localStorage.getItem("user1");
+	let data3 = localStorage.getItem("user2");
+
+	console.log(data1);
+
+	if (data1) {
+		let data = JSON.parse(data1);
+		appData.demo = data.name;
+		console.log(data);
+	}
+	if (data2) {
+		let data = JSON.parse(data2);
+		appData.user1 = data.name;
+	}
+	if (data3) {
+		let data = JSON.parse(data3);
+		appData.user2 = data.name;
+	}
+
+	let demo = document.querySelector('[data-user="demo"]');
+	demo.textContent = appData.demo;
+	let user1 = document.querySelector('[data-user="user1"]');
+	user1.textContent = appData.user1;
+	let user2 = document.querySelector('[data-user="user2"] ');
+	user2.textContent = appData.user2;
+
+	let pic = document.querySelector(".user-picture img");
+	let name = document.querySelector(".user-name p");
+
+	name.textContent = appData.name;
+	pic.src = appData.picture;
+	updateAccentColor(appData.color);
 }
 
 export function storeData() {
@@ -243,8 +343,13 @@ export function storeData() {
 	let newCategories = [];
 	let newTodoItemList = [];
 
-	newData.name = document.querySelector(".user-name p").textContent;
-	newData.picture = document.querySelector(".user-picture img").src;
+	newData.id = appData.id;
+	newData.name = appData.name;
+	newData.picture = appData.picture;
+	newData.color = appData.color;
+
+	// newData.name = document.querySelector(".user-name p").textContent;
+	// newData.picture = document.querySelector(".user-picture img").src;
 	newData.theme = (() => {
 		let test = document.querySelector(".theme-icon");
 		return test.classList.contains("theme-system")
@@ -253,7 +358,10 @@ export function storeData() {
 			? "light"
 			: "dark";
 	})();
-	newData.color = getAccentColorNumber();
+
+	appData.theme = newData.theme;
+
+	// newData.color = getAccentColorNumber();
 
 	// Get tags
 	for (let i = 0; i < tags.length; i++) {

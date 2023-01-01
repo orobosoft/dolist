@@ -158,6 +158,9 @@ const TodoItem = (...arg) => {
 
 // Create, get, set and delete todo-items
 export let todoItemList = [];
+export function resetTodoItemList() {
+	todoItemList = []
+}
 export default function todo() {
 
 	const getTodoItemList = () => {

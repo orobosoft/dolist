@@ -10,12 +10,12 @@
 	right: 0;
 	width: 100%;
 	padding: 1rem 0;
-	/* background: rgba(0, 0, 0, 0.4); */
+	background: rgba(0, 0, 0, 0.2);
 	backdrop-filter: blur(2px);
 }
 .dialogue__box {
   font-size: 1.6rem;
-	padding: 2rem;
+	padding: 3rem;
 	display: flex;
 	flex-direction: column;
 	gap: 1rem;
@@ -31,6 +31,43 @@
 .dialogue__title{
   font-size: 2rem;
 }
+.dialogue__dropdown{
+  padding: 0 1rem;
+  height: 3rem;
+  outline: 2px solid rgba(var(--color-3-t), 0.5);
+  border-radius:.5rem ;
+  -webkit-border-radius:.5rem ;
+  -moz-border-radius:.5rem ;
+  -ms-border-radius:.5rem ;
+  -o-border-radius:.5rem ;
+}
+.dropdown-select.dialogue__dropdown{
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  font-size: 1.8rem;
+}
+.dropdown-select.dialogue__dropdown div{
+  width: 100%;
+}
+.dialogue__colorBox{
+  width: 100%;
+}
+.dialogue__textBox{
+  padding: 0 1rem;
+  height: 3rem;
+  outline: 2px solid rgba(var(--color-3-t), 0.5);
+  border-radius:.5rem ;
+  -webkit-border-radius:.5rem ;
+  -moz-border-radius:.5rem ;
+  -ms-border-radius:.5rem ;
+  -o-border-radius:.5rem ;
+}
+.dialogue__textBox:focus,
+.dialogue__textBox:active{
+  /* outline: 2px solid rgba(var(--color-3-t), 0.5); */
+  box-shadow: 0 0 2px 3px rgba(var(--color-3-t), 0.5);
+}
 .dialogue__secondary {
 	display: none;
   gap: 1rem;
@@ -41,7 +78,6 @@
 .dialogue__buttons {
 	display: flex;
 	justify-content: end;
-	background-color: #fff;
 	gap: 1.5rem;
   padding-top: .5rem;
 }
@@ -56,10 +92,10 @@
 }
 .dialogue__button--cancel {
 	color: var(--color-7);
-  	border: 2px solid rgba(var(--color-7-t), 0.15);
+  	border: 2px solid rgba(var(--color-7-t), .15);
 }
 .dialogue__button--cancel:hover {
-	color: var(--bg-color);
+	color: var(--color-5);
 	background-color: var(--color-7);
 }
 .dialogue__button--okay {

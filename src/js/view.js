@@ -23,6 +23,7 @@ import {
 	dayAndNightIcon,
 	forwardIcon,
 	swatchIcon,
+	barsIcon,
 } from "./icons";
 const body = document.querySelector("body");
 // body.classList.add("dark");
@@ -166,13 +167,9 @@ function renderMain() {
 
 	const menuButton = document.createElement("div");
 	menuButton.classList = "menu-btn";
-	const topBar = document.createElement("div");
-	topBar.classList = "menu-btn-top";
-	const middleBar = document.createElement("div");
-	middleBar.classList = "menu-btn-middle";
-	const bottomBar = document.createElement("div");
-	bottomBar.classList = "menu-btn-bottom";
-	menuButton.append(topBar, middleBar, bottomBar);
+
+	createSvgIcon(menuButton, barsIcon)
+
 	menuButton.style.display = "none";
 
 	const searchContainer = document.createElement("div");

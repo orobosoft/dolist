@@ -52,6 +52,9 @@ menu li {
 	margin-bottom: 2.5rem;
 	gap: 1.8rem;
 }
+menu p{
+	pointer-events: none;
+}
 ul li:hover {
 	/* font-weight: bold; */
 }
@@ -460,9 +463,6 @@ menu ul:hover:current {
 
 /* Menu Button */
 .menu-btn {
-	gap: 5px;
-	flex-direction: column;
-	flex: 0 0 auto;
 	padding: 1rem;
 	border-radius: 0.5rem;
 	-webkit-border-radius: 0.5rem;
@@ -470,52 +470,13 @@ menu ul:hover:current {
 	-ms-border-radius: 0.5rem;
 	-o-border-radius: 0.5rem;
 }
-.menu-btn:hover {
-	background-color: rgba(var(--color-3-t), 0.1);
-}
-
-.menu-btn div {
-	pointer-events: none;
-	background-color: var(--color-6);
-	width: 3.3rem;
-	height: 0.3rem;
-	border-radius: 0.5rem;
-	-webkit-border-radius: 0.5rem;
-	-moz-border-radius: 0.5rem;
-	-ms-border-radius: 0.5rem;
-	-o-border-radius: 0.5rem;
-	transition: all 0.3s;
-	-webkit-transition: all 0.3s;
-	-moz-transition: all 0.3s;
-	-ms-transition: all 0.3s;
-	-o-transition: all 0.3s;
-}
-.close .menu-btn-top {
-	transform-origin: center;
-
-	transform: translateY(350%) rotate(-45deg);
-	-webkit-transform: translateY(350%) rotate(-45deg);
-	-moz-transform: translateY(350%) rotate(-45deg);
-	-ms-transform: translateY(350%) rotate(-45deg);
-	-o-transform: translateY(350%) rotate(-45deg);
-	-webkit-backface-visibility: hidden;
-}
-.close .menu-btn-middle {
-	opacity: 0;
-}
-.close .menu-btn-bottom {
-	transform-origin: center;
-
-	transform: translateY(-350%) rotate(45deg);
-	-webkit-transform: translateY(-350%) rotate(45deg);
-	-moz-transform: translateY(-350%) rotate(45deg);
-	-ms-transform: translateY(-350%) rotate(45deg);
-	-o-transform: translateY(-350%) rotate(45deg);
+.menu-btn .span-icon{
+	width: 4rem;
 }
 
 .aside-pop {
 	width: clamp(20rem, 70vw, 40rem);
-	z-index: 10;
+	z-index: 950;
 	flex-direction: column;
 	position: absolute;
 	font-size: 1.5rem;
@@ -546,8 +507,8 @@ menu ul:hover:current {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background-color: rgba(var(--bg-color-t), 0.5);
-	z-index: 9;
+	background-color: rgba(var(--bg-color-t), 0.8);
+	z-index: 900;
 }
 
 /* EXPANDED IMAGE */

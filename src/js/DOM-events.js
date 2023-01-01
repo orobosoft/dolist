@@ -120,6 +120,8 @@ document.addEventListener("click", (e) => {
 	loadTheme(e);
 	selectTheme(e);
 
+	console.log(e.target.classList);
+
 	// Show Users
 	if (e.target.classList.contains("user-name")) {
 		updateUserDetails();
@@ -137,6 +139,7 @@ document.addEventListener("click", (e) => {
 	}
 	// Change Users
 	if (e.target.classList.contains("users")) {
+		removeAsidePop()
 		let username = e.target.dataset.user;
 
 		defaultAppData.active = username;
@@ -559,12 +562,15 @@ addBtn.addEventListener("click", () => {
 	buttonFunction();
 });
 overview.addEventListener("click", () => {
+	removeAsidePop();
 	openOverview(todoItemList);
 });
 today.addEventListener("click", () => {
+	removeAsidePop();
 	openToday(todoItemList);
 });
 inbox.addEventListener("click", () => {
+	removeAsidePop();
 	openInbox(todoItemList);
 });
 projectList.addEventListener("click", () => {
@@ -577,6 +583,8 @@ searchBar.addEventListener("input", (e) => {
 	displaySearch(e);
 });
 settings.addEventListener("click", (e) => {
+	removeAsidePop();
+
 	app.append(settingsPageContainer(colors(), categories, tags, todoItemList));
 
 	let data = JSON.parse(localStorage.getItem(localStorage.getItem("active")));
@@ -730,6 +738,8 @@ function openProject() {
 	Array.from(document.querySelectorAll(".project-ul li")).forEach(
 		(element, index) => {
 			element.addEventListener("click", () => {
+	removeAsidePop();
+
 				clearAllAddedStyle();
 
 				const name = categories[index].getCategoryName();
@@ -805,6 +815,8 @@ function openTag() {
 	Array.from(document.querySelectorAll(".tag-ul li")).forEach(
 		(element, index) => {
 			element.addEventListener("click", (e) => {
+	removeAsidePop();
+
 				clearAllAddedStyle();
 
 				const filtered = () => {
@@ -1108,6 +1120,8 @@ function expandCardEvents(a) {
 
 		// Select Tag
 		if (e.target.classList.contains("tag-list-item")) {
+	removeAsidePop();
+
 			const tags = document.querySelector(".e-card__tag-value");
 			todo.addTag(e.target.textContent);
 			tags.replaceChildren();
@@ -1348,3 +1362,20 @@ function changeTagName() {}
 // POP UP
 function confirmationBox() {}
 function editBox() {}
+
+function removeAsidePop() {
+	const aside = document.querySelector(".aside");
+
+	if (aside.classList.contains("aside-pop")) {
+		aside.classList = "aside aside-pop slide-out";
+
+
+		setTimeout(() => {
+			aside.style.display = "none";
+		}, 550);
+		let bgElement = document.querySelector(".empty-bg");
+		bgElement.style.display = "none";
+		bgElement.remove();
+
+	}
+}

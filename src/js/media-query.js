@@ -49,7 +49,7 @@ function loadMobileView() {
 	const userPicture = document.querySelector(".user-picture");
 
 	document.querySelector(".menu-btn").style.display = "flex";
-	aside.classList = "aside aside-pop";
+	aside.classList = "aside aside-pop slide-in";
 	aside.style.display = "none";
 
 	extra.prepend(theme);
@@ -85,7 +85,7 @@ function loadTabletView() {
 	const userPicture = document.querySelector(".user-picture");
 
 	document.querySelector(".menu-btn").style.display = "flex";
-	aside.classList = "aside aside-pop";
+	aside.classList = "aside aside-pop slide-in";
 	aside.style.display = "none";
 	header.insertBefore(theme, question);
 	logoArea.append(userName, userPicture);
@@ -130,7 +130,7 @@ function loadLaptopView() {
 
 	document.querySelector(".menu-btn").style.display = "flex";
 
-	aside.classList = "aside aside-pop";
+	aside.classList = "aside aside-pop slide-in";
 	aside.style.display = "none";
 	header.insertBefore(theme, question);
 	header.append(userName, userPicture);
@@ -215,6 +215,7 @@ document.addEventListener("click", (e) => {
 
 	const app = document.querySelector("#app");
 	const aside = document.querySelector(".aside");
+
 	if (e.target.classList.contains("menu-btn")) {
 		app.appendChild(bgElement);
 		bgElement.style.display = "block";
@@ -225,12 +226,6 @@ document.addEventListener("click", (e) => {
 	}
 	if (e.target.classList.contains("empty-bg")) {
 		aside.classList = "aside aside-pop slide-out";
-		// let ddd = document.querySelector('.empty-bg');
-		// bgElement.classList.remove('fade-in')
-		// bgElement.classList.remove('fade-in')
-		// ddd.classList.remove('fade-in')
-		// ddd.classList.add('fade-out')
-
 
 		setTimeout(() => {
 			aside.style.display = "none";

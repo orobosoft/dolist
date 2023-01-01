@@ -17,7 +17,6 @@ const TagItem = (name) => {
 		const filtered = [];
 		arr.forEach((e, i) => {
 			const t = e.getTags();
-			console.log(t);
 			for (let n = 0; n < t.length; n++) {
 				if (t[n].toLowerCase() === tagName.toLowerCase()) {
 					filtered.push(e);

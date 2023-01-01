@@ -139,11 +139,6 @@ document.addEventListener("click", (e) => {
 	if (e.target.classList.contains("users")) {
 		let username = e.target.dataset.user;
 
-		console.log(e.target);
-		// let username = e.target.firstElementChild.textContent.toLowerCase();
-
-		console.log(username);
-
 		defaultAppData.active = username;
 		updateStorage();
 
@@ -157,7 +152,6 @@ document.addEventListener("click", (e) => {
 		loadApp();
 	}
 
-	console.log(e.target.classList);
 	// Expand User Picture
 	if (
 		e.target.classList.contains("user-picture") ||
@@ -451,7 +445,6 @@ function expandImage(e) {
 	bg.classList = "e-card-blur fade-in";
 	const imgContainer = document.createElement("div");
 	imgContainer.classList = "expanded-image e-card-bg pop-open";
-	console.log(pic.src);
 	const image = new Image();
 	image.src = pic.src;
 	image.alt = "User Image";
@@ -1252,13 +1245,6 @@ function saveCardItem(item) {
 		list.description = i.children[1].value;
 		checkList.push(list);
 	});
-
-	console.log(title);
-	console.log(description);
-	console.log(date);
-	console.log(priority);
-	console.log(stats);
-	console.log(checkList);
 
 	item.setTitle(title);
 	item.setDescription(description);

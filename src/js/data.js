@@ -249,14 +249,13 @@ export function firstLoad(data) {
 	resetCategories()
 	resetTags()
 	resetTodoItemList()
-	
+
 	appData.id = data.id;
 	appData.picture = data.picture;
 	appData.theme = data.theme;
 	appData.name = data.name;
 	appData.color = data.color;
 
-	console.log(data);
 	let name = document.querySelector(".user-name p");
 	let img = document.querySelector(".user-picture img");
 
@@ -270,7 +269,6 @@ export function firstLoad(data) {
 	todo().setTodoItemList(data.todoArray);
 	category().setCategories(data.categoryArray);
 	tag().setTags(data.tagArray);
-	console.log(tags);
 
 	localStorage.setItem("active", `${data.id}`);
 	localStorage.setItem(`${data.id}`, JSON.stringify(storeData()));
@@ -278,8 +276,6 @@ export function firstLoad(data) {
 
 export function loadApp() {
 	// localStorage.clear()
-	console.log("LS: " + localStorage.getItem("active"));
-	console.log("N: " + defaultAppData.active);
 	let data = localStorage.getItem(localStorage.getItem("active"));
 
 	if (data) {
@@ -289,16 +285,13 @@ export function loadApp() {
 		showProjectList(categories);
 		loopTags(tags);
 		updateUserDetails();
-		console.log("NEWWW");
 	} else {
-		console.log(defaultAppData[defaultAppData.active]);
 		firstLoad(defaultAppData[defaultAppData.active]);
 		updateUserDetails();
 		openToday(todoItemList);
 		showProjectList(categories);
 		loopTags(tags);
 		updateUserDetails();
-		console.log("OOLDDD");
 	}
 }
 export function updateUserDetails() {
@@ -306,12 +299,9 @@ export function updateUserDetails() {
 	let data2 = localStorage.getItem("user1");
 	let data3 = localStorage.getItem("user2");
 
-	console.log(data1);
-
 	if (data1) {
 		let data = JSON.parse(data1);
 		appData.demo = data.name;
-		console.log(data);
 	}
 	if (data2) {
 		let data = JSON.parse(data2);

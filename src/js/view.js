@@ -689,9 +689,6 @@ export function expandCard(expandCardObj, colors, catObj, tagObj) {
 	const eCardTodoList = document.createElement("div");
 	eCardTodoList.classList = "e-card__todo-list";
 
-	// let objCheckList = expandCardObj.checkLists;
-	// Call check list items
-	// console.log(expandCardObj.getCheckLists());
 	renderCheckList(expandCardObj.getCheckLists());
 	function renderCheckList(obj) {
 		for (let i = obj.length - 1; i >= 0; i--) {

@@ -6,7 +6,8 @@
 	gap: 10px;
 	background-color: var(--bg-color);
 	padding: 1.5rem 2rem;
-	box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+	        box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
 	border-radius: 1rem;
 	-webkit-border-radius: 1rem;
 	-moz-border-radius: 1rem;
@@ -19,7 +20,8 @@
 	-o-transition: all .2s ease-in-out; */
 }
 .card:hover{
-	box-shadow: var(--color-3) 0px 0px 0px 2px, var(--color-3) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
+	-webkit-box-shadow: var(--color-3) 0px 0px 0px 2px, var(--color-3) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
+	        box-shadow: var(--color-3) 0px 0px 0px 2px, var(--color-3) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
 }
 .completed.card {
 	background-color: var(--color-1);
@@ -37,14 +39,18 @@
 }
 .card__extras {
 	font-size: 1.4rem;
-	align-items: center;
+	-webkit-box-align: center;
+	    -ms-flex-align: center;
+	        align-items: center;
 	width: 100%;
 	gap: 10px;
 }
 
 .card__tags,
 .card__flag-container {
-	align-items: center;
+	-webkit-box-align: center;
+	    -ms-flex-align: center;
+	        align-items: center;
 	justify-items: flex-start;
 	gap: 1px;
 }
@@ -104,9 +110,15 @@
 	-o-border-radius: 40%;
 }
 .outer-check {
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
-	justify-content: center;
-	align-items: center;
+	-webkit-box-pack: center;
+	    -ms-flex-pack: center;
+	        justify-content: center;
+	-webkit-box-align: center;
+	    -ms-flex-align: center;
+	        align-items: center;
 	height: 18px;
 	width: 18px;
 	border: 2px solid var(--color-3);

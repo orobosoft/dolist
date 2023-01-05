@@ -16,7 +16,7 @@ module.exports = {
 	// 	static: "./dist",
 	// },
 	output: {
-		filename: "main.js",
+		filename: "main-[hash].js",
 		path: path.resolve(__dirname, "dist"),
 		clean: true,
 	},
@@ -42,11 +42,11 @@ module.exports = {
 	},
 	plugins: [
 		new HtmlWebpackPlugin({title: "DoList" }),
-		new MiniCssExtractPlugin({ filename: "[name].css" }),
+		new MiniCssExtractPlugin({ filename: "[name]-[hash].css" }),
 	],
 	// plugins: [
 	// 	new HtmlWebpackPlugin({ template: "./src/index.html", title: "DoList" }),
-	// 	new MiniCssExtractPlugin({ filename: "[name].css" }),
+	// 	new MiniCssExtractPlugin({ filename: "[name]-[hash].css" }),
 	// ],
 	performance: {
 		hints: process.env.NODE_ENV === "production" ? "warning" : false,

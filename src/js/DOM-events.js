@@ -1098,7 +1098,6 @@ function expandCardEvents(a) {
 			createDialogueBox(
 				"Are you sure you want to delete this task?",
 				false,
-				false,
 				"",
 				deleteTodo,
 				null,

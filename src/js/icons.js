@@ -8,6 +8,8 @@ export function createSvgIcon(node, d) {
 	iconSvg.classList.add("svg-icon");
 	iconSvg.setAttribute("fill", "none");
 	iconSvg.setAttribute("viewBox", "0 0 24 24");
+	iconSvg.setAttribute("height", "1em");
+	iconSvg.setAttribute("width", "1em");
 	iconSvg.setAttribute("stroke", "currentColor");
 	iconPath.setAttribute("d", d);
 	iconPath.setAttribute("stroke-linecap", "round");
